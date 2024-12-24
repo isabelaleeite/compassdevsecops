@@ -25,17 +25,15 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 2. Pesquise por **Ubuntu** e selecione a versão desejada (**Ubuntu 20.04** ou superior é recomendado).
 3. Clique em **Instalar** para adicionar a distribuição ao seu sistema.
 
-## **Parte 2: Configuração da VPC**
+## **Parte 2: Configurar ambiente AWS**
 
-### **1. Acessar o Console da AWS**
+### **1. Criar a VPC**
 1. Faça login na sua conta AWS.
 2. No painel principal, vá até **Serviços** e selecione **VPC**.
+3. Clique no botão **Criar VPC**.
+4. Na próxima tela, selecione a opção **VPC e muito mais**.
 
-### **2. Criar a VPC**
-1. Clique no botão **Criar VPC**.
-2. Na próxima tela, selecione a opção **VPC e muito mais**.
-
-### **3. Configurar os parâmetros da VPC**
+### **2. Configurar os parâmetros da VPC**
 Preencha os campos conforme indicado abaixo:
 
 - **Nome da VPC**: Insira um nome descritivo, como `minha-vpc`.
@@ -45,7 +43,7 @@ Preencha os campos conforme indicado abaixo:
 - **NAT Gateways**: **Nenhum**.
 - **Endpoints da VPC**: **Nenhum**.
 
-### **4. Finalizar a criação**
+### **3. Finalizar a criação**
 1. Revise as configurações para garantir que estão corretas.
 2. Clique no botão **Criar VPC**.
 3. Aguarde o processo de criação ser concluído.
@@ -58,15 +56,13 @@ Preencha os campos conforme indicado abaixo:
 - **NAT Gateway**: O NAT Gateway permite que instâncias em subnets privadas acessem a Internet. No entanto, como não utilizaremos subnets privadas neste projeto, não será necessário configurar um NAT Gateway.
 - **Endpoints da VPC**: Endpoints permitem que você se conecte a serviços da AWS de forma privada dentro da sua VPC, sem precisar passar pela Internet. No entanto, neste projeto, não há necessidade de configurar endpoints da VPC.
 
-## Parte 3. Criar e Configurar o Grupo de Segurança
-
-### Passos para Criar o Grupo de Segurança
+### Criar o Grupo de Segurança
 
 1. **Acesse o Console de EC2** e vá para **Security Groups**.
 2. **Crie um novo grupo**:
-   - **Nome**: `meu-grupo-de-seguranca`
+   - **Nome**: Dê um nome para o seu grupo de segurança
    - **Descrição**: `Grupo de segurança para controlar tráfego da EC2`
-   - **Vincule à VPC** criada anteriormente.
+   - **Vincule à VPC** criada.
 3. **Adicionar Regras de Entrada**:
    - **SSH (porta 22)**: 
      - Fonte: `0.0.0.0/0` (acesso SSH de qualquer IP)
@@ -77,7 +73,7 @@ Preencha os campos conforme indicado abaixo:
      - Destino: `0.0.0.0/0` (permite tráfego de saída irrestrito)
 5. **Revisar e Criar**.
 
-## Explicações
+### Explicações
 
 - **SSH**: Liberar `0.0.0.0/0` é necessário para acessar a instância, mas recomenda-se restringir a um IP específico por segurança.
 - **HTTP**: Liberar o tráfego HTTP de `0.0.0.0/0` permite acesso público ao servidor Nginx.
@@ -85,32 +81,23 @@ Preencha os campos conforme indicado abaixo:
 
 Esse processo garante que sua instância EC2 esteja acessível para administração e web, enquanto possibilita comunicação externa.
 
-# Parte 4. Criar Instância EC2
+### Criar Instância EC2
 
-## Passos para Criar a Instância EC2
-
-1. **Acesse o Console da AWS** e vá para a seção **EC2**.
-2. Clique em **Launch Instance** para iniciar o processo de criação.
-3. **Escolher a AMI (Imagem do Sistema Operacional)**:
-   - Selecione uma imagem **Ubuntu 20.04 LTS** (ou versão mais recente disponível).
-4. **Escolher o Tipo de Instância**:
-   - Selecione uma instância de tipo `t2.micro` (dentro do **nível gratuito** se aplicável).
-   - Crie um par de chaves **RSA** em formato **.pem**
+1. **Acesse o Console da AWS** e vá para a seção **EC2** e clique em **Launch Instance** para iniciar o processo de criação.
+2. **Escolher a AMI**: Selecione **Ubuntu 20.04 LTS** 
+3. **Escolher o Tipo de Instância**: Selecione uma instância de tipo `t2.micro` (nível gratuito)
+4. Crie um par de chaves **RSA** em formato **.pem**
 5. **Configurações de rede**:
    - Selecione a **VPC** criada anteriormente.
-   - Selecione a **Sub-rede** e **Atribua Ip público automaticamente**.
-   - Clique em **selecionar o grupo de segurança existente** e selecione o grupo de segurança que criamos anteriormente.
-6. **Adicionar Armazenamento**:
-   - O armazenamento padrão de **8 GB** é suficiente para a maioria das necessidades iniciais.
-7. **Associar Grupo de Segurança**:
-   - Selecione o grupo de segurança **já criado**.
-8. **Revisar e Lançar**:
-   - Clique em **Launch**.
+   - Selecione a **Sub-rede** e **atribua Ip público automaticamente**.
+   - Selecione o **grupo de segurança** criado anteriormente.
+6. **Armazenamento**: O armazenamento padrão de **8 GB** é suficiente.
+7. Clique em **Revisar e Lançar**
+   
+### Explicações
 
-## Explicações
-
-- **Ubuntu 20.04 LTS**: Essa versão é uma das mais populares e estável para servidores. Oferece suporte de longo prazo.
-- **Tipo t2.micro**: Gratuito no nível AWS Free Tier, suficiente para testes e pequenos projetos.
+- **Ubuntu 20.04 LTS**: Sistema operacional estável e recomendado para servidores.
+- **Tipo t2.micro**:instância gratuita no **AWS Free Tier**, suficiente para este projeto.
 - **Armazenamento**: 8 GB de EBS é adequado para sistemas pequenos. Pode ser expandido conforme necessário.
 - **Par de chaves**: Essa chave permite acesso seguro à instância via SSH.
 
