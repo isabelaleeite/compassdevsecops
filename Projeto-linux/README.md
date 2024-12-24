@@ -56,7 +56,7 @@ Preencha os campos conforme indicado abaixo:
 - **NAT Gateway**: O NAT Gateway permite que instâncias em subnets privadas acessem a Internet. No entanto, como não utilizaremos subnets privadas neste projeto, não será necessário configurar um NAT Gateway.
 - **Endpoints da VPC**: Endpoints permitem que você se conecte a serviços da AWS de forma privada dentro da sua VPC, sem precisar passar pela Internet. No entanto, neste projeto, não há necessidade de configurar endpoints da VPC.
 
-### Criar o Grupo de Segurança
+### 4. Criar o Grupo de Segurança
 
 1. **Acesse o Console de EC2** e vá para **Security Groups**.
 2. **Crie um novo grupo**:
@@ -81,7 +81,7 @@ Preencha os campos conforme indicado abaixo:
 
 Esse processo garante que sua instância EC2 esteja acessível para administração e web, enquanto possibilita comunicação externa.
 
-### Criar Instância EC2
+### 5. Criar Instância EC2
 
 1. **Acesse o Console da AWS** e vá para a seção **EC2** e clique em **Launch Instance** para iniciar o processo de criação.
 2. **Escolher a AMI**: Selecione **Ubuntu 20.04 LTS** 
