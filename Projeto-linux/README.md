@@ -25,7 +25,7 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 2. Pesquise por **Ubuntu** e selecione a versão desejada (**Ubuntu 20.04** ou superior é recomendado).
 3. Clique em **Instalar** para adicionar a distribuição ao seu sistema.
 
-## **Parte 2: Configuração da VPC na AWS**
+## **Parte 2: Configuração da VPC**
 
 ### **1. Acessar o Console da AWS**
 1. Faça login na sua conta AWS.
@@ -50,7 +50,15 @@ Preencha os campos conforme indicado abaixo:
 2. Clique no botão **Criar VPC**.
 3. Aguarde o processo de criação ser concluído.
 
-## Parte 4. Criar e Configurar o Grupo de Segurança
+### Explicações
+
+- **VPC**: Uma VPC é uma rede virtual isolada dentro da AWS, onde você pode executar recursos, como instâncias EC2, de forma segura. Criar uma VPC permite que você tenha controle sobre o tráfego de rede e defina a arquitetura de rede de acordo com as necessidades do seu projeto.
+- **Zonas de Disponibilidade (AZs)**: As zonas de disponibilidade são locais fisicamente separados dentro de uma região. Ao distribuir seus recursos em múltiplas AZs, você aumenta a resiliência e a disponibilidade do seu ambiente. 
+- **Subnets Públicas**: As subnets públicas são aquelas que têm acesso direto à Internet, essencial para a execução de servidores web, como o Nginx, ou outros serviços que precisam se comunicar com a Internet.
+- **NAT Gateway**: O NAT Gateway permite que instâncias em subnets privadas acessem a Internet. No entanto, como não utilizaremos subnets privadas neste projeto, não será necessário configurar um NAT Gateway.
+- **Endpoints da VPC**: Endpoints permitem que você se conecte a serviços da AWS de forma privada dentro da sua VPC, sem precisar passar pela Internet. No entanto, neste projeto, não há necessidade de configurar endpoints da VPC.
+
+## Parte 3. Criar e Configurar o Grupo de Segurança
 
 ### Passos para Criar o Grupo de Segurança
 
@@ -76,5 +84,34 @@ Preencha os campos conforme indicado abaixo:
 - **Saída**: Permitir todo tráfego de saída facilita a comunicação da instância com a internet, mas pode ser restrito conforme a necessidade de segurança.
 
 Esse processo garante que sua instância EC2 esteja acessível para administração e web, enquanto possibilita comunicação externa.
+
+# Parte 4. Criar Instância EC2
+
+## Passos para Criar a Instância EC2
+
+1. **Acesse o Console da AWS** e vá para a seção **EC2**.
+2. Clique em **Launch Instance** para iniciar o processo de criação.
+3. **Escolher a AMI (Imagem do Sistema Operacional)**:
+   - Selecione uma imagem **Ubuntu 20.04 LTS** (ou versão mais recente disponível).
+4. **Escolher o Tipo de Instância**:
+   - Selecione uma instância de tipo `t2.micro` (dentro do **nível gratuito** se aplicável).
+   - Crie um par de chaves **RSA** em formato **.pem**
+5. **Configurações de rede**:
+   - Selecione a **VPC** criada anteriormente.
+   - Selecione a **Sub-rede** e **Atribua Ip público automaticamente**.
+   - Clique em **selecionar o grupo de segurança existente** e selecione o grupo de segurança que criamos anteriormente.
+6. **Adicionar Armazenamento**:
+   - O armazenamento padrão de **8 GB** é suficiente para a maioria das necessidades iniciais.
+7. **Associar Grupo de Segurança**:
+   - Selecione o grupo de segurança **já criado**.
+8. **Revisar e Lançar**:
+   - Clique em **Launch**.
+
+## Explicações
+
+- **Ubuntu 20.04 LTS**: Essa versão é uma das mais populares e estável para servidores. Oferece suporte de longo prazo.
+- **Tipo t2.micro**: Gratuito no nível AWS Free Tier, suficiente para testes e pequenos projetos.
+- **Armazenamento**: 8 GB de EBS é adequado para sistemas pequenos. Pode ser expandido conforme necessário.
+- **Par de chaves**: Essa chave permite acesso seguro à instância via SSH.
 
 
