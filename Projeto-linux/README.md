@@ -5,6 +5,23 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 
 ---
 
+# Índice
+
+- [Descrição](#descrição)
+- [Parte 1: Instalação do WSL no Windows](#parte-1-instalação-do-wsl-no-windows)
+  - [Ativar o Subsistema do Windows para Linux](#1-ativar-o-subsistema-do-windows-para-linux)
+  - [Instalar o WSL](#2-instalar-o-wsl)
+  - [Instalar o Ubuntu pela Microsoft Store](#3-instalar-o-ubuntu-pela-microsoft-store)
+- [Parte 2: Configurar ambiente AWS](#parte-2-configurar-ambiente-aws)
+  - [Criar a VPC](#1-criar-a-vpc)
+  - [Configurar os parâmetros da VPC](#2-configurar-os-parâmetros-da-vpc)
+  - [Finalizar a criação](#3-finalizar-a-criação)
+  - [Criar o Grupo de Segurança](#4-criar-o-grupo-de-segurança)
+  - [Criar Instância EC2](#5-criar-instância-ec2)
+  - [Conectar à Instância EC2 via SSH](#6-conectar-à-instância-ec2-via-ssh)
+- [Parte 3: Instalando e configurando o Nginx](#parte-3-instalando-e-configurando-o-nginx)
+
+
 ## **Parte 1: Instalação do WSL no Windows**
 
 ### **1. Ativar o Subsistema do Windows para Linux**
@@ -100,5 +117,25 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 - **Tipo t2.micro**:instância gratuita no **AWS Free Tier**, suficiente para este projeto.
 - **Armazenamento**: 8 GB de EBS é adequado para sistemas pequenos. Pode ser expandido conforme necessário.
 - **Par de chaves**: Essa chave permite acesso seguro à instância via SSH.
+
+### 6. Conectar à Instância EC2 via SSH
+
+1. **Prepare a Chave Privada**
+   - No terminal, defina permissões para a chave privada:
+     ```bash
+     chmod 400 "sua-chave-privada.pem"
+     ```
+
+2. **Conectar via SSH**
+   - Execute o comando abaixo, substituindo o caminho para a chave privada e o DNS público da sua instância:
+     ```bash
+     ssh -i "caminho-para-sua-chave.pem" ec2-user@seu-endereco-publico-ec2
+     ```
+
+## Parte 3. Instalando e configurando o Nginx
+
+
+
+     
 
 
