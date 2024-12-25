@@ -216,25 +216,22 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 2. **Adicione a seguinte linha ao final do arquivo**
 
-  ```bash
-  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
+   ```bash
+    */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
 
 - O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 
-*/5 - O primeiro campo (minuto) indica que o comando será executado a cada 5 minutos.
-* - O segundo campo (hora) indica que o comando será executado em todas as horas.
-* - O terceiro campo (dia do mês) indica que o comando será executado todos os dias do mês.
-* - O quarto campo (mês) indica que o comando será executado todos os meses.
-* - O quinto campo (dia da semana) indica que o comando será executado todos os dias da semana.
-Portanto, */5 * * * * faz com que o comando seja executado a cada 5 minutos, em qualquer hora, dia, mês e dia da semana.
 
 3. **Salve e saia do editor**
 
 ## Parte 6. Testando
 
 1. **Verifique os arquivos de log no diretório /var/log/nginx**
- ```bash
- cat /var/log/nginx/servico_online.log
- cat /var/log/nginx/servico_offline.log
+   ```bash
+   cat /var/log/nginx/servico_online.log
+   cat /var/log/nginx/servico_offline.log
+
+### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
+
 
 
