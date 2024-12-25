@@ -209,7 +209,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
  - Vamos configurar a execução automática do scirpt a cada 5 minutos utilizando o **cron**
 
 1. **Edite o arquivo de tarefas agendadas do cron**
-  ```bash
+   ```bash
    crontab -e
 
 - Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para facilitar a edição do arquivo.
