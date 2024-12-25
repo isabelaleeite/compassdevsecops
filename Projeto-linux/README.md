@@ -1,4 +1,4 @@
-# Projeto: Monitoramento de Servidor com Nginx e Automação de Logs
+# Projeto: Monitoramento Nginx - Compass UOL | Atividade Prática 1 #PB - NOV 2024 | DevSecOps
 
 ## **Descrição**
 Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servidor Nginx rodando em uma instância EC2 da AWS, e implementa um script para monitorar o status do serviço Nginx, gerando logs automatizados.
@@ -20,7 +20,25 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
   - [Criar Instância EC2](#5-criar-instância-ec2)
   - [Conectar à Instância EC2 via SSH](#6-conectar-à-instância-ec2-via-ssh)
 - [Parte 3: Instalando e configurando o Nginx](#parte-3-instalando-e-configurando-o-nginx)
+  - [Atualização do Sistema Ubuntu](#1-atualização-do-sistema-ubuntu)
+  - [Instalando o Nginx](#2-instalando-o-nginx)
+  - [Verificando o Status do Nginx](#3-verificando-o-status-do-nginx)
+  - [Habilitar o Nginx para iniciar automaticamente](#4-habilitar-o-nginx-para-iniciar-automaticamente)
+  - [Acessando o Nginx](#5-acessando-o-nginx)
+- [Parte 4: Criação do Script de Verificação](#parte-4-criação-do-script-de-verificação)
+  - [Acessando o diretório de logs do Nginx e alterando permissões](#1-acessando-o-diretório-de-logs-do-nginx-e-alterando-permissões)
+  - [Criando o diretório para armazenar o Script](#2-criando-o-diretório-para-armazenar-o-script)
+  - [Criando o Script de verificação](#3-criando-o-script-de-verificação)
+  - [Inserindo o código no arquivo](#4-inserindo-o-código-no-arquivo)
+  - [Deixando o script executável](#5-deixando-o-script-executável)
+- [Parte 5: Automatizando o Script](#parte-5-automatizando-o-script)
+  - [Editando o arquivo de tarefas agendadas do cron](#1-editando-o-arquivo-de-tarefas-agendadas-do-cron)
+  - [Adicionando a linha no cron para execução a cada 5 minutos](#2-adicionando-a-linha-no-cron-para-execução-a-cada-5-minutos)
+  - [Salvando e saindo do editor](#3-salvando-e-saindo-do-editor)
+- [Parte 6: Testando](#parte-6-testando)
+  - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
 
+---
 
 ## **Parte 1: Instalação do WSL no Windows**
 
@@ -41,6 +59,8 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 1. Abra a **Microsoft Store**:
 2. Pesquise por **Ubuntu** e selecione a versão desejada (**Ubuntu 20.04** ou superior é recomendado).
 3. Clique em **Instalar** para adicionar a distribuição ao seu sistema.
+
+---
 
 ## **Parte 2: Configurar ambiente AWS**
 
@@ -131,6 +151,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
      ```bash
      ssh -i "caminho-para-sua-chave.pem" ec2-user@seu-endereco-publico-ec2
      ```
+---
 
 ## Parte 3. Instalando e configurando o Nginx
 
@@ -158,6 +179,8 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 5.  **Acessando o Nginx**
    - Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
+   - 
+---
 
 ## Parte 4. Criação do Script de Verificação
 
@@ -203,6 +226,8 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 5. **Deixe o script executável**
    ```bash
    sudo chmod +x valida_nginx.sh
+   
+---
 
 ## Parte 5. Automatizando o Script
 
@@ -221,8 +246,9 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 - O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 
-
 3. **Salve e saia do editor**
+
+---
 
 ## Parte 6. Testando
 
