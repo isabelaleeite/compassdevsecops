@@ -1,10 +1,5 @@
 # Projeto: Monitoramento Nginx - Compass UOL | Atividade Prática 1 #PB - NOV 2024 | DevSecOps
 
-## **Descrição**
-Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servidor Nginx rodando em uma instância EC2 da AWS, e implementa um script para monitorar o status do serviço Nginx, gerando logs automatizados.
-
----
-
 # Índice
 
 - [Descrição](#descrição)
@@ -38,7 +33,23 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 - [Parte 6: Testando](#parte-6-testando)
   - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
 
----
+## **Descrição**
+Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servidor Nginx rodando em uma instância EC2 da AWS, e implementa um script para monitorar o status do serviço Nginx, gerando logs automatizados.
+
+
+## Estrutura do projeto
+
+```mermaid
+graph TD
+    A[Criar EC2] --> B[Subir Nginx]
+    B --> C[Verificar Nginx]
+    C --> D[Criar Script de Validação]
+    D --> E[Gerar Arquivo de Saída]
+    E --> F[Automatizar Execução]
+    F --> G[Versionar Projeto]
+    G --> H[Fim]
+```
+
 
 ## **Parte 1: Instalação do WSL no Windows**
 
@@ -50,7 +61,6 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 
 ### **2. Instalar o WSL**
 1. Abra o **PowerShell** como administrador:
-   - Clique no botão **Iniciar**, digite **PowerShell**, clique com o botão direito e selecione **Executar como administrador**.
 2. Execute o comando abaixo para instalar o WSL:
    ```powershell
    wsl --install
@@ -59,7 +69,7 @@ Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servid
 1. Abra a **Microsoft Store**:
 2. Pesquise por **Ubuntu** e selecione a versão desejada (**Ubuntu 20.04** ou superior é recomendado).
 3. Clique em **Instalar** para adicionar a distribuição ao seu sistema.
-
+   
 ---
 
 ## **Parte 2: Configurar ambiente AWS**
@@ -271,7 +281,7 @@ Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para fac
 
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 
-### 3. **alvando e saindo do editor**
+### 3. **Salvando e saindo do editor**
 Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
 
 ---
