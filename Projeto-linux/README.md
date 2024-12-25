@@ -135,7 +135,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ## Parte 3. Instalando e configurando o Nginx
 
 1. **Atualização do Sistema Ubuntu**
-   - Primeiro, atualize a lista de pacotes e atualize os pacotes instalados para a versão mais recente.:
+   - Primeiro, atualize a lista de pacotes e atualize os pacotes instalados para a versão mais recente:
    ```bash
    sudo apt update && sudo apt upgrade -y
    
@@ -143,31 +143,28 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    ```bash
    sudo apt install nginx -y
 
-
 3.  **Verificando o Status do Nginx**
    - Se o Nginx estiver em execução, você verá uma saída indicando que o serviço está ativo (running).
      ```bash
-    systemctl status nginx
+     systemctl status nginx
 
-     Caso contrário, você pode iniciar o serviço com o comando:
+   - Caso contrário, você pode iniciar o serviço com o comando:
      ```bash
      sudo systemctl start nginx
 
-4.  ***Habilite o Nginx para iniciar automaticamente**
+4.  **Habilite o Nginx para iniciar automaticamente**
     ```bash
     sudo systemctl enable nginx
 
-5.  ***Acessando o Nginx**
+5.  **Acessando o Nginx**
    - Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
 
 ## Parte 4. Criação do Script de Verificação
 
 1. **Acesse o diretório de logs do Nginx e altere as permissões da pasta**
    ```bash
-   cd /var/log/nginx
    sudo chmod 755 /var/log/nginx
-
-
+   
 2. **Crie o diretório para armazenar o Script**
    - Por boas práticas, scripts que têm impacto global no sistema devem ser armazenados em /usr/local/bin.
    ```bash
@@ -201,15 +198,42 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
         echo "$DATA_HORA - $SERVICO - OFFLINE - Serviço indisponível" >> $DIR_LOG/servico_offline.log
     fi
 
-5. **Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)**
+- Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
    
-6. **Deixe o script executável**
+5. **Deixe o script executável**
    ```bash
    sudo chmod +x valida_nginx.sh
 
+## Parte 5. Automatizando o Script
 
+ - Vamos configurar a execução automática do scirpt a cada 5 minutos utilizando o **cron**
 
+1. **Edite o arquivo de tarefas agendadas do cron**
+  ```bash
+  crontab -e
+- Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para facilitar a edição do arquivo.
 
-     
+2. **Adicione a seguinte linha ao final do arquivo**
+
+  ```bash
+  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
+
+- O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
+
+*/5 - O primeiro campo (minuto) indica que o comando será executado a cada 5 minutos.
+* - O segundo campo (hora) indica que o comando será executado em todas as horas.
+* - O terceiro campo (dia do mês) indica que o comando será executado todos os dias do mês.
+* - O quarto campo (mês) indica que o comando será executado todos os meses.
+* - O quinto campo (dia da semana) indica que o comando será executado todos os dias da semana.
+Portanto, */5 * * * * faz com que o comando seja executado a cada 5 minutos, em qualquer hora, dia, mês e dia da semana.
+
+3. **Salve e saia do editor**
+
+## Parte 6. Testando
+
+1. **Verifique os arquivos de log no diretório /var/log/nginx**
+ ```bash
+ cat /var/log/nginx/servico_online.log
+ cat /var/log/nginx/servico_offline.log
 
 
