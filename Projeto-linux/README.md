@@ -134,6 +134,80 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 ## Parte 3. Instalando e configurando o Nginx
 
+1. **Atualização do Sistema Ubuntu**
+   - Primeiro, atualize a lista de pacotes e atualize os pacotes instalados para a versão mais recente.:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   
+2. **Instalando o Nginx**
+   ```bash
+   sudo apt install nginx -y
+
+
+3.  **Verificando o Status do Nginx**
+   - Se o Nginx estiver em execução, você verá uma saída indicando que o serviço está ativo (running).
+     ```bash
+    systemctl status nginx
+
+     Caso contrário, você pode iniciar o serviço com o comando:
+     ```bash
+     sudo systemctl start nginx
+
+4.  ***Habilite o Nginx para iniciar automaticamente**
+    ```bash
+    sudo systemctl enable nginx
+
+5.  ***Acessando o Nginx**
+   - Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
+
+## Parte 4. Criação do Script de Verificação
+
+1. **Acesse o diretório de logs do Nginx e altere as permissões da pasta**
+   ```bash
+   cd /var/log/nginx
+   sudo chmod 755 /var/log/nginx
+
+
+2. **Crie o diretório para armazenar o Script**
+   - Por boas práticas, scripts que têm impacto global no sistema devem ser armazenados em /usr/local/bin.
+   ```bash
+   cd /usr/local/bin
+   sudo mkdir scripts
+   cd scripts
+
+3. **Crie o Script de verificação**
+   ```bash
+   sudo nano valida_nginx.sh
+   
+4. **Insira o seguinte código no arquivo**
+   ```bash
+   #!/bin/bash
+    
+    # Data e hora atuais
+    DATA_HORA=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # Nome do serviço
+    SERVICO="nginx"
+    
+    # Diretório para os arquivos de saída
+    DIR_LOG="/var/log/nginx"
+    
+    # Verificar status do serviço
+    if systemctl is-active --quiet $SERVICO; then
+        # Serviço está online
+        echo "$DATA_HORA - $SERVICO - ONLINE - Serviço funcionando corretamente" >> $DIR_LOG/servico_online.log
+    else
+        # Serviço está offline
+        echo "$DATA_HORA - $SERVICO - OFFLINE - Serviço indisponível" >> $DIR_LOG/servico_offline.log
+    fi
+
+5. **Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)**
+   
+6. **Deixe o script executável**
+   ```bash
+   sudo chmod +x valida_nginx.sh
+
+
 
 
      
