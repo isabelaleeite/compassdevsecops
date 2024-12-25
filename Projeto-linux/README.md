@@ -210,7 +210,8 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 1. **Edite o arquivo de tarefas agendadas do cron**
   ```bash
-  crontab -e
+   crontab -e
+
 - Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para facilitar a edição do arquivo.
 
 2. **Adicione a seguinte linha ao final do arquivo**
