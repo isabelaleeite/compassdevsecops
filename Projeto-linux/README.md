@@ -196,12 +196,12 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 ## Parte 4. Criação do Script de Verificação
 
-### 1. **Acesse o diretório de logs do Nginx e altere as permissões da pasta**
+### 1. **Acessando o diretório de logs do Nginx e alterando permissões**
 
    ```bash
    sudo chmod 755 /var/log/nginx
    ```
-### 2. **Crie o diretório para armazenar o Script**
+### 2. **Criando o diretório para armazenar o Script**
    Por boas práticas, scripts que têm impacto global no sistema devem ser armazenados em /usr/local/bin.
        
    ```bash
@@ -210,13 +210,13 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    cd scripts
    ```
 
-### 3. **Crie o Script de verificação**
+### 3. **Criando o Script de verificação**
 
    ```bash
    sudo nano valida_nginx.sh
    ```
 
-### 4. **Insira o seguinte código no arquivo**
+### 4. **Inserindo o código no arquivo**
 
 ```bash
   #!/bin/bash
@@ -243,7 +243,7 @@ fi
 
 Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
    
-### 5. **Deixe o script executável**
+### 5. **Deixando o script executável**
 
 ```bash
 sudo chmod +x valida_nginx.sh
@@ -255,7 +255,7 @@ sudo chmod +x valida_nginx.sh
 
 Vamos configurar a execução automática do scirpt a cada 5 minutos utilizando o **cron**
 
-### 1. **Edite o arquivo de tarefas agendadas do cron**
+### 1. **Editando o arquivo de tarefas agendadas do cron**
 
 ```bash
 crontab -e
@@ -263,7 +263,7 @@ crontab -e
 
 Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para facilitar a edição do arquivo.
 
-### 2. **Adicione a seguinte linha ao final do arquivo**
+### 2. **Adicionando a linha no cron para execução a cada 5 minutos**
   
 ```bash
  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
@@ -271,13 +271,15 @@ Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para fac
 
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 
-### 3. **Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)****
+### 3. **alvando e saindo do editor**
+Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
 
 ---
 
 ## Parte 6. Testando
 
-### 1. **Verifique os arquivos de log no diretório /var/log/nginx**
+### 1. **Verificando os arquivos de log**
+Verifique os arquivos de log no diretório /var/log/nginx
 
 ```bash
 cat /var/log/nginx/servico_online.log
