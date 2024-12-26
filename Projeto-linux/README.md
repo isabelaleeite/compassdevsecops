@@ -175,7 +175,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    ```
    systemctl status nginx
    ```
-   ![](img/)
+   ![](img/nginx-active.png)
 
    Caso contrário, você pode iniciar o serviço com o comando:
      
@@ -192,7 +192,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
   Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
   
-  ![](img/)
+  ![](img/welcome-nginx.png)
 
 ---
 
@@ -249,7 +249,7 @@ else
 fi
 
 ```
-![](img/)
+![](img/script2.png)
 
 Salve o arquivo (Ctrl + X,  Y,  Enter)
    
@@ -277,10 +277,10 @@ sudo crontab -e
  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
 ```
 
-![](img/)
+![](img/cron.png)
 
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
-![](img/)
+![](img/guia-cron.png)
 
 ### 3. **Salvando e saindo do editor**
 Salve o arquivo apertando ESC e depois digite **:wq**
@@ -296,13 +296,13 @@ Verifique os arquivos de log no diretório /var/log/nginx
 cat /var/log/nginx/status_online.log
 ```
 
-![](img/)
+![](img/log-servidor-online.png)
 
 ```bash
 cat /var/log/nginx/status_offline.log
 ```
 
-![](img/)
+![](img/log-servidor-ofline.png)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
@@ -339,6 +339,7 @@ sudo docker run -d --name nginx-container -p 80:80 nginx
 # Exibir o status do container Nginx
 sudo docker ps
 ```
+![](img/userdata.png)
 
 O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
 
@@ -374,8 +375,13 @@ else
     echo "Nginx está offline no container."
 fi
 ```
+![](img/script-docker.png)
 
 **Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
+
+![](img/log-servidor-online-container.png)
+
+![](img/log-servidor-offline-docker.png)
 
 ## Comandos Adicionais
 
