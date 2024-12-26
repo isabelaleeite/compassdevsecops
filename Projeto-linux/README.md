@@ -379,7 +379,15 @@ fi
 
 **Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
 
+```bash
+cat /var/log/nginx-logs/status_online.log
+```
+
 ![](img/log-servidor-online-container.png)
+
+```bash
+cat /var/log/nginx-logs/status_offline.log
+```
 
 ![](img/log-servidor-offline-docker.png)
 
