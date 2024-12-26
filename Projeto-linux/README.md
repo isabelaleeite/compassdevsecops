@@ -118,7 +118,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 5. Criar Instância EC2
 
 1. **Acesse o Console da AWS** e vá para a seção **EC2** e clique em **Launch Instance** para iniciar o processo de criação.
-2. **Escolher a AMI**: Selecione **Ubuntu 24.04 LTS** 
+2. **Escolher a AMI**: Selecione **Linux Ubuntu 2 AMI** 
 3. **Escolher o Tipo de Instância**: Selecione uma instância de tipo `t2.micro` (nível gratuito)
 4. Crie um par de chaves **RSA** em formato **.pem**
 5. **Configurações de rede**:
@@ -147,16 +147,23 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
 ## Parte 3. Instalando e configurando o Nginx
 
-### 1. **Atualização do Sistema Ubuntu**
+### 1. **Atualização do Sistema**
    Primeiro, atualize a lista de pacotes e atualize os pacotes instalados para a versão mais recente:
      
-   ```
-   sudo apt update && sudo apt upgrade -y
+   ```bash
+   sudo yum update && sudo yum upgrade -y
    ```
 
-### 2. **Instalando o Nginx**
+### 2. **Instalar o repositório EPEL (Extra Packages for Enterprise Linux)**
+   O Nginx não está no repositório padrão do Amazon Linux 2, então você precisa habilitar o repositório EPEL.
+
+   ```bash
+   sudo amazon-linux-extras install epel -y
+   ```  
+
+### 3. **Instalando o Nginx**
    ```
-   sudo apt install nginx -y
+   sudo yum install nginx -y
    ```
 
 ### 3. **Verificando o Status do Nginx**
@@ -205,21 +212,23 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 3. **Criando o Script de verificação**
 
    ```bash
-   sudo nano valida_nginx.sh
+   sudo valida_nginx.sh
    ```
 
 ### 4. **Inserindo o código no arquivo**
 
 ```bash
+
 #!/bin/bash
 
 # Definindo variáveis de saída para arquivos de log no diretório /var/log/nginx/
 LOG_ONLINE="/var/log/nginx/status_online.log"
 LOG_OFFLINE="/var/log/nginx/status_offline.log"
 
-# Cria os arquivos de log, se não existirem
+# Cria os arquivos de log, se não existirem, com permissões apropriadas
 sudo touch $LOG_ONLINE
 sudo touch $LOG_OFFLINE
+sudo chmod 644 $LOG_ONLINE $LOG_OFFLINE
 
 # Armazena a data e hora atual
 DATA=$(date "+%Y-%m-%d %H:%M:%S")
@@ -227,7 +236,7 @@ DATA=$(date "+%Y-%m-%d %H:%M:%S")
 # Variável do nome do serviço
 SERVICO="NGINX"
 
-# Verifica o status do serviço e armazena dentro do arquivo log
+# Verifica o status do serviço e armazena dentro do arquivo de log
 if systemctl is-active --quiet nginx; then
     echo "$DATA : [$SERVICO - Online] Servidor em execução." | sudo tee -a $LOG_ONLINE > /dev/null
     echo "NGINX está online"
@@ -235,6 +244,7 @@ else
     echo "$DATA : [$SERVICO - Offline] Servidor fora de execução." | sudo tee -a $LOG_OFFLINE > /dev/null
     echo "NGINX está offline"
 fi
+
 ```
 ![](img/script.png)
 
@@ -255,10 +265,8 @@ Vamos configurar a execução automática do scirpt a cada 5 minutos utilizando 
 ### 1. **Editando o arquivo de tarefas agendadas do cron**
 
 ```bash
-crontab -e
+sudo crontab -e
 ```
-
-Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para facilitar a edição do arquivo.
 
 ### 2. **Adicionando a linha no cron para execução a cada 5 minutos**
   
@@ -272,7 +280,7 @@ O */5 * * * * no cron é uma expressão que define a frequência de execução d
 ![](img/guia-cron.png)
 
 ### 3. **Salvando e saindo do editor**
-Salve o arquivo (Ctrl + X, Y , Enter) 
+Salve o arquivo apertando ESC e depois digite **:wq**
 
 ---
 
@@ -294,5 +302,40 @@ cat /var/log/nginx/status_offline.log
 ![](img/log-servidor-ofline.png)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
+
+
+## Bônus - Verificação Automática do Status do Nginx no Docker
+
+Vamos refazer o projeto utilizando **Docker** e **User Data** para aproveitar seus benefícios: o Docker garante portabilidade e isolamento ao executar o Nginx em um contêiner, enquanto o User Data automatiza a instalação e configuração do ambiente durante a inicialização da instância, reduzindo erros manuais e agilizando o processo.
+
+## Parte 1. Inserindo código userdata
+
+Na criação da Instância EC2, clique em **Detalhes avançados** e no campo **Dados do usuário** insira o código abaixo:
+
+```bash
+#!/bin/bash
+
+# Atualizar o sistema
+sudo yum update -y
+
+# Instalar o Docker
+sudo yum install -y docker
+
+# Adicionar o usuário "ec2-user" ao grupo "docker" para permitir o uso do Docker sem sudo
+sudo usermod -a -G docker ec2-user
+
+# Ativar e iniciar o serviço Docker
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# Iniciar o Nginx dentro de um container Docker
+sudo docker run -d --name nginx-container -p 80:80 nginx
+
+# Exibir o status do container Nginx
+sudo docker ps
+```
+
+O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
+
 
 
