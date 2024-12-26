@@ -175,7 +175,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    ```
    systemctl status nginx
    ```
-   ![](img/nginx-active.png)
+   ![](img/)
 
    Caso contrário, você pode iniciar o serviço com o comando:
      
@@ -192,7 +192,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 
   Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
   
-  ![](img/welcome-nginx.png)
+  ![](img/)
 
 ---
 
@@ -249,7 +249,7 @@ else
 fi
 
 ```
-![](img/script.png)
+![](img/)
 
 Salve o arquivo (Ctrl + X,  Y,  Enter)
    
@@ -277,10 +277,10 @@ sudo crontab -e
  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
 ```
 
-![](img/cron.png)
+![](img/)
 
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
-![](img/guia-cron.png)
+![](img/)
 
 ### 3. **Salvando e saindo do editor**
 Salve o arquivo apertando ESC e depois digite **:wq**
@@ -296,13 +296,13 @@ Verifique os arquivos de log no diretório /var/log/nginx
 cat /var/log/nginx/status_online.log
 ```
 
-![](img/log-servidor-online.png)
+![](img/)
 
 ```bash
 cat /var/log/nginx/status_offline.log
 ```
 
-![](img/log-servidor-ofline.png)
+![](img/)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
