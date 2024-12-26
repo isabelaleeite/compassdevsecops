@@ -15,11 +15,12 @@
   - [Criar Instância EC2](#5-criar-instância-ec2)
   - [Conectar à Instância EC2 via SSH](#6-conectar-à-instância-ec2-via-ssh)
 - [Parte 3: Instalando e configurando o Nginx](#parte-3-instalando-e-configurando-o-nginx)
-  - [Atualização do Sistema Ubuntu](#1-atualização-do-sistema-ubuntu)
-  - [Instalando o Nginx](#2-instalando-o-nginx)
-  - [Verificando o Status do Nginx](#3-verificando-o-status-do-nginx)
-  - [Habilitar o Nginx para iniciar automaticamente](#4-habilitar-o-nginx-para-iniciar-automaticamente)
-  - [Acessando o Nginx](#5-acessando-o-nginx)
+  - [Atualização do Sistema](#1-atualização-do-sistema)
+  - [Instalar o repositório EPEL](#2-instalar-o-repositório-epel)
+  - [Instalando o Nginx](#3-instalando-o-nginx)
+  - [Verificando o Status do Nginx](#4-verificando-o-status-do-nginx)
+  - [Habilitar o Nginx para iniciar automaticamente](#5-habilitar-o-nginx-para-iniciar-automaticamente)
+  - [Acessando o Nginx](#6-acessando-o-nginx)
 - [Parte 4: Criação do Script de Verificação](#parte-4-criação-do-script-de-verificação)
   - [Acessando o diretório de logs do Nginx e alterando permissões](#1-acessando-o-diretório-de-logs-do-nginx-e-alterando-permissões)
   - [Criando o diretório para armazenar o Script](#2-criando-o-diretório-para-armazenar-o-script)
@@ -32,6 +33,7 @@
   - [Salvando e saindo do editor](#3-salvando-e-saindo-do-editor)
 - [Parte 6: Testando](#parte-6-testando)
   - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
+- [Bônus](#bônus)
 
 ## **Descrição**
 
@@ -154,7 +156,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    sudo yum update && sudo yum upgrade -y
    ```
 
-### 2. **Instalar o repositório EPEL (Extra Packages for Enterprise Linux)**
+### 2. **Instalar o repositório EPEL**
    O Nginx não está no repositório padrão do Amazon Linux 2, então você precisa habilitar o repositório EPEL.
 
    ```bash
@@ -166,7 +168,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    sudo yum install nginx -y
    ```
 
-### 3. **Verificando o Status do Nginx**
+### 4. **Verificando o Status do Nginx**
    Se o Nginx estiver em execução, você verá uma saída indicando que o serviço está ativo (running).
      
    ```
@@ -180,12 +182,12 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    sudo systemctl start nginx
    ```
 
-### 4. **Habilitar o Nginx para iniciar automaticamente**
+### 5. **Habilitar o Nginx para iniciar automaticamente**
    ```
    sudo systemctl enable nginx
    ```
 
-### 5. **Acessando o Nginx**
+### 6. **Acessando o Nginx**
 
   Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
   
@@ -304,7 +306,9 @@ cat /var/log/nginx/status_offline.log
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
 
-## Bônus - Verificação Automática do Status do Nginx no Docker
+# Bônus 
+
+## Verificação Automática do Status do Nginx no Docker
 
 Vamos refazer o projeto utilizando **Docker** e **User Data** para aproveitar seus benefícios: o Docker garante portabilidade e isolamento ao executar o Nginx em um contêiner, enquanto o User Data automatiza a instalação e configuração do ambiente durante a inicialização da instância, reduzindo erros manuais e agilizando o processo.
 
@@ -336,6 +340,58 @@ sudo docker ps
 ```
 
 O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
+
+## Parte 2. Criação do Script
+
+Repita o **Passo 4** anterior, porém, vamos modificar o script para usar o Docker e rodar o Nginx dentro de um container. Insira o script abaixo e continue os processos.
+
+```bash
+#!/bin/bash
+
+# Atualizar o sistema
+sudo yum update -y
+
+# Instalar o Docker
+sudo yum install -y docker
+
+# Adicionar o usuário "ec2-user" ao grupo "docker" para permitir o uso do Docker sem sudo
+sudo usermod -a -G docker ec2-user
+
+# Ativar e iniciar o serviço Docker
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# Iniciar o Nginx dentro de um container Docker
+sudo docker run -d --name nginx-container -p 80:80 nginx
+
+# Exibir o status do container Nginx
+sudo docker ps
+```
+**Continue o restante do procedimento** 
+
+## Comandos Adicionais
+
+Depois de rodar o script, você pode utilizar os seguintes comandos para gerenciar o container do Nginx:
+
+**Verificar containers em execução:**
+```bash
+sudo docker ps
+```
+
+**Parar o container Nginx:**
+## Comandos Adicionais
+
+Depois de rodar o script, você pode utilizar os seguintes comandos para gerenciar o container do Nginx:
+
+**Verificar containers em execução:**
+```bash
+sudo docker stop nginx-container
+```
+
+**Iniciar novamente o container Nginx:**
+```bash
+sudo docker start nginx-container
+```
 
 
 
