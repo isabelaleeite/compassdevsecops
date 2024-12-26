@@ -157,7 +157,6 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 2. **Instalando o Nginx**
    ```
    sudo apt install nginx -y
-
    ```
 
 ### 3. **Verificando o Status do Nginx**
@@ -166,7 +165,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    ```
    systemctl status nginx
    ```
-   ![](nginx-active.png)
+   ![](img/nginx-active.png)
 
    Caso contrário, você pode iniciar o serviço com o comando:
      
@@ -182,7 +181,8 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 5. **Acessando o Nginx**
 
   Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
-  ![](welcome-nginx.png)
+  
+  ![](img/welcome-nginx.png)
 
 ---
 
@@ -236,9 +236,9 @@ else
     echo "NGINX está offline"
 fi
 ```
-![](script.png)
+![](img/script.png)
 
-Salve o arquivo (Ctrl + x,  y,  Enter)
+Salve o arquivo (Ctrl + X,  Y,  Enter)
    
 ### 5. **Deixando o script executável**
 
@@ -271,7 +271,7 @@ O */5 * * * * no cron é uma expressão que define a frequência de execução d
 ![](img/guia-cron.png)
 
 ### 3. **Salvando e saindo do editor**
-Salve o arquivo (Ctrl + x, y , Enter) 
+Salve o arquivo (Ctrl + X, Y , Enter) 
 
 ---
 
@@ -284,13 +284,13 @@ Verifique os arquivos de log no diretório /var/log/nginx
 cat /var/log/nginx/status_online.log
 ```
 
-![](log-servidor-online.png)
+![](img/log-servidor-online.png)
 
 ```bash
 cat /var/log/nginx/status_offline.log
 ```
 
-![](log-servidor-ofline.png)
+![](img/log-servidor-ofline.png)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
