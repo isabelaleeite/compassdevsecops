@@ -314,7 +314,7 @@ Vamos refazer o projeto utilizando **Docker** e **User Data** para aproveitar se
 
 ## Parte 1. Inserindo código userdata
 
-Na criação da Instância EC2, clique em **Detalhes avançados** e no campo **Dados do usuário** insira o código abaixo:
+Na criação da Instância EC2, clique em **Detalhes avançados** e no campo **Dados do usuário** insira o código abaixo
 
 ```bash
 #!/bin/bash
@@ -348,25 +348,32 @@ Repita o **Passo 4** anterior, porém, vamos modificar o script para usar o Dock
 ```bash
 #!/bin/bash
 
-# Atualizar o sistema
-sudo yum update -y
+# Definindo variáveis de saída para arquivos de log
+LOG_ONLINE="/var/log/nginx-logs/status_online.log"
+LOG_OFFLINE="/var/log/nginx-logs/status_offline.log"
 
-# Instalar o Docker
-sudo yum install -y docker
+# Cria o diretório de logs, se não existir
+sudo mkdir -p /var/log/nginx-logs
+sudo touch $LOG_ONLINE
+sudo touch $LOG_OFFLINE
+sudo chmod 644 $LOG_ONLINE $LOG_OFFLINE
 
-# Adicionar o usuário "ec2-user" ao grupo "docker" para permitir o uso do Docker sem sudo
-sudo usermod -a -G docker ec2-user
+# Armazena a data e hora atual
+DATA=$(date "+%Y-%m-%d %H:%M:%S")
 
-# Ativar e iniciar o serviço Docker
-sudo systemctl enable docker.service
-sudo systemctl start docker.service
+# Nome do container Docker que executa o Nginx
+CONTAINER_NAME="nginx-container"
 
-# Iniciar o Nginx dentro de um container Docker
-sudo docker run -d --name nginx-container -p 80:80 nginx
-
-# Exibir o status do container Nginx
-sudo docker ps
+# Verifica o status do container Docker
+if sudo docker ps --filter "name=$CONTAINER_NAME" --filter "status=running" | grep -q $CONTAINER_NAME; then
+    echo "$DATA : [Nginx - Online] Container em execução." | sudo tee -a $LOG_ONLINE > /dev/null
+    echo "Nginx está online no container."
+else
+    echo "$DATA : [Nginx - Offline] Container parado." | sudo tee -a $LOG_OFFLINE > /dev/null
+    echo "Nginx está offline no container."
+fi
 ```
+
 **Continue o restante do procedimento** 
 
 ## Comandos Adicionais
