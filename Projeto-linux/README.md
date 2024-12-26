@@ -34,6 +34,7 @@
 - [Parte 6: Testando](#parte-6-testando)
   - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
 - [Bônus](#bônus)
+- [Referências](#referências)
 
 ## **Descrição**
 
