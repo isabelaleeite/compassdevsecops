@@ -121,7 +121,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 5. Criar Instância EC2
 
 1. **Acesse o Console da AWS** e vá para a seção **EC2** e clique em **Launch Instance** para iniciar o processo de criação.
-2. **Escolher a AMI**: Selecione **Linux Ubuntu 2 AMI** 
+2. **Escolher a AMI**: Selecione **Amazon Linux Ubuntu 2 AMI** 
 3. **Escolher o Tipo de Instância**: Selecione uma instância de tipo `t2.micro` (nível gratuito)
 4. Crie um par de chaves **RSA** em formato **.pem**
 5. **Configurações de rede**:
@@ -203,6 +203,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    ```bash
    sudo chmod 755 /var/log/nginx
    ```
+
 ### 2. **Criando o diretório para armazenar o Script**
    Por boas práticas, scripts que têm impacto global no sistema devem ser armazenados em /usr/local/bin.
        
@@ -296,13 +297,13 @@ Verifique os arquivos de log no diretório /var/log/nginx
 cat /var/log/nginx/status_online.log
 ```
 
-![](img/log-servidor-online.png)
+![](img/log-servidor-online)
 
 ```bash
 cat /var/log/nginx/status_offline.log
 ```
 
-![](img/log-servidor-ofline.png)
+![](img/log-servidor-ofline)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
@@ -379,15 +380,24 @@ fi
 
 **Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
 
-![](img/log-servidor-online-container.png)
+```bash
+cat /var/log/nginx-logs/status_online.log
+```
 
-![](img/log-servidor-offline-docker.png)
+![](img/log-servidor-online-container)
+
+```bash
+cat /var/log/nginx-logs/status_offline.log
+```
+
+![](img/log-servidor-offline-docker)
 
 ## Comandos Adicionais
 
 Depois de rodar o script, você pode utilizar os seguintes comandos para gerenciar o container do Nginx:
 
 **Verificar containers em execução:**
+
 ```bash
 sudo docker ps
 ```
