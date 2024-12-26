@@ -397,5 +397,15 @@ sudo docker stop nginx-container
 sudo docker start nginx-container
 ```
 
+## Referências
+
+1. [Docker Documentation](https://docs.docker.com/) - Documentação oficial do Docker, fornecendo informações detalhadas sobre instalação, configuração e uso de containers.
+2. [AWS EC2 User Data Documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html) - Explica como usar o User Data para automatizar a configuração e execução de scripts em instâncias EC2.
+3. [Nginx Official Documentation](https://nginx.org/en/docs/) - Documentação oficial do Nginx, oferecendo detalhes sobre instalação, configuração e uso.
+4. [Cron Syntax and Usage](https://man7.org/linux/man-pages/man5/crontab.5.html) - Guia de sintaxe e uso do cron para agendar tarefas no Linux.
+5. [Amazon EC2 Documentation](https://docs.aws.amazon.com/ec2/) - Guia oficial para trabalhar com instâncias EC2, incluindo criação, configuração e gerenciamento.
+6. [Installing Nginx using AWS EC2 User Data - Medium](https://medium.com/sai-ops/installing-nginx-using-aws-ec2-user-data-5590fdbe528d) - Artigo explicando como instalar e configurar o Nginx em uma instância EC2 usando o User Data.
+7. [YouTube - Como lançar uma EC2 com Docker na AWS](https://www.youtube.com/watch?v=rYWjsOWGmxU&t=747s) - Vídeo explicando como utilizar o User Data do AWS EC2 para automatizar a instalação e configuração de serviços em instâncias EC2.
+
 
 
