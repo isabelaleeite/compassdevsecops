@@ -297,13 +297,13 @@ Verifique os arquivos de log no diretório /var/log/nginx
 cat /var/log/nginx/status_online.log
 ```
 
-![](img/log-servidor-online.png)
+![](img/log-servidor-online)
 
 ```bash
 cat /var/log/nginx/status_offline.log
 ```
 
-![](img/log-servidor-ofline.png)
+![](img/log-servidor-ofline)
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
 
@@ -384,13 +384,13 @@ fi
 cat /var/log/nginx-logs/status_online.log
 ```
 
-![](img/log-servidor-online-container.png)
+![](img/log-servidor-online-container)
 
 ```bash
 cat /var/log/nginx-logs/status_offline.log
 ```
 
-![](img/log-servidor-offline-docker.png)
+![](img/log-servidor-offline-docker)
 
 ## Comandos Adicionais
 
