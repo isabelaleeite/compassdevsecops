@@ -374,7 +374,7 @@ else
 fi
 ```
 
-**Continue o restante do procedimento** 
+**Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
 
 ## Comandos Adicionais
 
@@ -386,16 +386,13 @@ sudo docker ps
 ```
 
 **Parar o container Nginx:**
-## Comandos Adicionais
 
-Depois de rodar o script, você pode utilizar os seguintes comandos para gerenciar o container do Nginx:
-
-**Verificar containers em execução:**
 ```bash
 sudo docker stop nginx-container
 ```
 
 **Iniciar novamente o container Nginx:**
+
 ```bash
 sudo docker start nginx-container
 ```
