@@ -34,15 +34,16 @@
   - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
 
 ## **Descrição**
-Este projeto cria um ambiente Linux no Windows usando o WSL, configura um servidor Nginx rodando em uma instância EC2 da AWS, e implementa um script para monitorar o status do serviço Nginx, gerando logs automatizados.
+
+Configurar um servidor Nginx online no Linux e criar um script para verificar seu status, registrando os resultados em arquivos de saída distintos (ONLINE ou OFFLINE) com data, hora e nome do serviço. O script será automatizado para rodar a cada 5 minutos. O projeto será versionado no GitHub e a documentação explicará o processo de instalação e configuração.
 
 
 ## Estrutura do projeto
 
 ```mermaid
 graph TD
-    A[Criar EC2] --> B[Subir Nginx]
-    B --> C[Verificar Nginx]
+    A[Instalar WSL] --> B[Configurar ambiente AWS - Criando VPC e EC2]
+    B --> C[Instalar e configurar Nginx]
     C --> D[Criar Script de Validação]
     D --> E[Gerar Arquivo de Saída]
     E --> F[Automatizar Execução]
@@ -67,7 +68,7 @@ graph TD
 
 ### **3. Instalar o Ubuntu pela Microsoft Store**
 1. Abra a **Microsoft Store**:
-2. Pesquise por **Ubuntu** e selecione a versão desejada (**Ubuntu 20.04** ou superior é recomendado).
+2. Pesquise por **Ubuntu** 
 3. Clique em **Instalar** para adicionar a distribuição ao seu sistema.
    
 ---
@@ -95,14 +96,6 @@ Preencha os campos conforme indicado abaixo:
 2. Clique no botão **Criar VPC**.
 3. Aguarde o processo de criação ser concluído.
 
-### Explicações
-
-- **VPC**: Uma VPC é uma rede virtual isolada dentro da AWS, onde você pode executar recursos, como instâncias EC2, de forma segura. Criar uma VPC permite que você tenha controle sobre o tráfego de rede e defina a arquitetura de rede de acordo com as necessidades do seu projeto.
-- **Zonas de Disponibilidade (AZs)**: As zonas de disponibilidade são locais fisicamente separados dentro de uma região. Ao distribuir seus recursos em múltiplas AZs, você aumenta a resiliência e a disponibilidade do seu ambiente. 
-- **Subnets Públicas**: As subnets públicas são aquelas que têm acesso direto à Internet, essencial para a execução de servidores web, como o Nginx, ou outros serviços que precisam se comunicar com a Internet.
-- **NAT Gateway**: O NAT Gateway permite que instâncias em subnets privadas acessem a Internet. No entanto, como não utilizaremos subnets privadas neste projeto, não será necessário configurar um NAT Gateway.
-- **Endpoints da VPC**: Endpoints permitem que você se conecte a serviços da AWS de forma privada dentro da sua VPC, sem precisar passar pela Internet. No entanto, neste projeto, não há necessidade de configurar endpoints da VPC.
-
 ### 4. Criar o Grupo de Segurança
 
 1. **Acesse o Console de EC2** e vá para **Security Groups**.
@@ -120,18 +113,12 @@ Preencha os campos conforme indicado abaixo:
      - Destino: `0.0.0.0/0` (permite tráfego de saída irrestrito)
 5. **Revisar e Criar**.
 
-### Explicações
-
-- **SSH**: Liberar `0.0.0.0/0` é necessário para acessar a instância, mas recomenda-se restringir a um IP específico por segurança.
-- **HTTP**: Liberar o tráfego HTTP de `0.0.0.0/0` permite acesso público ao servidor Nginx.
-- **Saída**: Permitir todo tráfego de saída facilita a comunicação da instância com a internet, mas pode ser restrito conforme a necessidade de segurança.
-
 Esse processo garante que sua instância EC2 esteja acessível para administração e web, enquanto possibilita comunicação externa.
 
 ### 5. Criar Instância EC2
 
 1. **Acesse o Console da AWS** e vá para a seção **EC2** e clique em **Launch Instance** para iniciar o processo de criação.
-2. **Escolher a AMI**: Selecione **Ubuntu 20.04 LTS** 
+2. **Escolher a AMI**: Selecione **Ubuntu 24.04 LTS** 
 3. **Escolher o Tipo de Instância**: Selecione uma instância de tipo `t2.micro` (nível gratuito)
 4. Crie um par de chaves **RSA** em formato **.pem**
 5. **Configurações de rede**:
@@ -139,15 +126,8 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    - Selecione a **Sub-rede** e **atribua Ip público automaticamente**.
    - Selecione o **grupo de segurança** criado anteriormente.
 6. **Armazenamento**: O armazenamento padrão de **8 GB** é suficiente.
-7. Clique em **Revisar e Lançar**
+7. Clique em **Executar instância**
    
-### Explicações
-
-- **Ubuntu 20.04 LTS**: Sistema operacional estável e recomendado para servidores.
-- **Tipo t2.micro**:instância gratuita no **AWS Free Tier**, suficiente para este projeto.
-- **Armazenamento**: 8 GB de EBS é adequado para sistemas pequenos. Pode ser expandido conforme necessário.
-- **Par de chaves**: Essa chave permite acesso seguro à instância via SSH.
-
 ### 6. Conectar à Instância EC2 via SSH
 
 1. **Prepare a Chave Privada**
@@ -165,8 +145,6 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
      ```
 ---
 
-
-
 ## Parte 3. Instalando e configurando o Nginx
 
 ### 1. **Atualização do Sistema Ubuntu**
@@ -179,6 +157,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 2. **Instalando o Nginx**
    ```
    sudo apt install nginx -y
+
    ```
 
 ### 3. **Verificando o Status do Nginx**
@@ -229,11 +208,15 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 4. **Inserindo o código no arquivo**
 
 ```bash
-  #!/bin/bash
+#!/bin/bash
 
 # Definindo variáveis de saída para arquivos de log no diretório /var/log/nginx/
 LOG_ONLINE="/var/log/nginx/status_online.log"
 LOG_OFFLINE="/var/log/nginx/status_offline.log"
+
+# Cria os arquivos de log, se não existirem
+sudo touch $LOG_ONLINE
+sudo touch $LOG_OFFLINE
 
 # Armazena a data e hora atual
 DATA=$(date "+%Y-%m-%d %H:%M:%S")
@@ -243,15 +226,15 @@ SERVICO="NGINX"
 
 # Verifica o status do serviço e armazena dentro do arquivo log
 if systemctl is-active --quiet nginx; then
-    echo "$DATA : [$SERVICO - Online] Servidor em execução." >> $LOG_ONLINE
+    echo "$DATA : [$SERVICO - Online] Servidor em execução." | sudo tee -a $LOG_ONLINE > /dev/null
     echo "NGINX está online"
 else
-    echo "$DATA : [$SERVICO - Offline] Servidor fora de execução." >> $LOG_OFFLINE
+    echo "$DATA : [$SERVICO - Offline] Servidor fora de execução." | sudo tee -a $LOG_OFFLINE > /dev/null
     echo "NGINX está offline"
 fi
 ```
 
-Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
+Salve o arquivo (Ctrl + x,  y,  Enter)
    
 ### 5. **Deixando o script executável**
 
@@ -284,7 +267,7 @@ O */5 * * * * no cron é uma expressão que define a frequência de execução d
 ![](img/guia-cron.png)
 
 ### 3. **Salvando e saindo do editor**
-Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
+Salve o arquivo (Ctrl + x, y , Enter) 
 
 ---
 
@@ -294,8 +277,8 @@ Salve o arquivo (Ctrl + O, Enter) e saia do editor (Ctrl + X)
 Verifique os arquivos de log no diretório /var/log/nginx
 
 ```bash
-cat /var/log/nginx/servico_online.log
-cat /var/log/nginx/servico_offline.log
+cat /var/log/nginx/status_online.log
+cat /var/log/nginx/status_offline.log
 ```
 
 ### Agora o script está configurado e será executado automaticamente a cada 5 minutos, registrando o status do serviço Nginx.
