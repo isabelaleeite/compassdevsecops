@@ -249,7 +249,7 @@ else
 fi
 
 ```
-![](img/script.png)
+![](img/script2.png)
 
 Salve o arquivo (Ctrl + X,  Y,  Enter)
    
@@ -339,6 +339,7 @@ sudo docker run -d --name nginx-container -p 80:80 nginx
 # Exibir o status do container Nginx
 sudo docker ps
 ```
+![](img/userdata.png)
 
 O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
 
@@ -374,8 +375,13 @@ else
     echo "Nginx está offline no container."
 fi
 ```
+![](img/script-docker.png)
 
 **Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
+
+![](img/log-servidor-online-container.png)
+
+![](img/log-servidor-offline-docker.png)
 
 ## Comandos Adicionais
 
