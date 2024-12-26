@@ -266,6 +266,7 @@ Ao executar `crontab -e` pela primeira vez, selecione o editor **nano** para fac
  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
 ```
 
+![](img/cron.png)
 
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 ![](img/guia-cron.png)
