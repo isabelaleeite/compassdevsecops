@@ -245,7 +245,7 @@ else
 fi
 
 ```
-![](img/script2.png)
+![](img/script.png)
 
 Salve o arquivo (Ctrl + X,  Y,  Enter)
    
