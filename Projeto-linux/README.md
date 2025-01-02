@@ -391,13 +391,13 @@ O **User Data** permite automatizar a configuração e execução de scripts ou 
 
 
 ```bash
-sudo docker exec nginx-container cat /var/log/nginx/status_online.log
+cat /var/log/nginx/status_online.log
 ```
 
 ![](img/log-servidor-online-container.png)
 
 ```bash
-sudo docker exec nginx-container cat /var/log/nginx/status_offline.log
+cat /var/log/nginx/status_offline.log
 ```
 
 ![](img/log-servidor-offline-docker.png)
