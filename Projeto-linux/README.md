@@ -16,10 +16,10 @@
   - [Conectar à Instância EC2 via SSH](#6-conectar-à-instância-ec2-via-ssh)
 - [Parte 3: Instalando e configurando o Nginx](#parte-3-instalando-e-configurando-o-nginx)
   - [Atualização do Sistema](#1-atualização-do-sistema)
-  - [Instalando o Nginx](#3-instalando-o-nginx)
-  - [Verificando o Status do Nginx](#4-verificando-o-status-do-nginx)
-  - [Habilitar o Nginx para iniciar automaticamente](#5-habilitar-o-nginx-para-iniciar-automaticamente)
-  - [Acessando o Nginx](#6-acessando-o-nginx)
+  - [Instalando o Nginx](#2-instalando-o-nginx)
+  - [Verificando o Status do Nginx](#3-verificando-o-status-do-nginx)
+  - [Habilitar o Nginx para iniciar automaticamente](#4-habilitar-o-nginx-para-iniciar-automaticamente)
+  - [Acessando o Nginx](#5-acessando-o-nginx)
 - [Parte 4: Criação do Script de Verificação](#parte-4-criação-do-script-de-verificação)
   - [Acessando o diretório de logs do Nginx e alterando permissões](#1-acessando-o-diretório-de-logs-do-nginx-e-alterando-permissões)
   - [Criando o diretório para armazenar o Script](#2-criando-o-diretório-para-armazenar-o-script)
@@ -27,9 +27,12 @@
   - [Inserindo o código no arquivo](#4-inserindo-o-código-no-arquivo)
   - [Deixando o script executável](#5-deixando-o-script-executável)
 - [Parte 5: Automatizando o Script](#parte-5-automatizando-o-script)
-  - [Editando o arquivo de tarefas agendadas do cron](#1-editando-o-arquivo-de-tarefas-agendadas-do-cron)
-  - [Adicionando a linha no cron para execução a cada 5 minutos](#2-adicionando-a-linha-no-cron-para-execução-a-cada-5-minutos)
-  - [Salvando e saindo do editor](#3-salvando-e-saindo-do-editor)
+  - [Instalar o pacote cron](#1-instalar-o-pacote-cron)
+  - [Ativar o serviço cron para iniciar automaticamente no boot](#2-ativar-o-serviço-cron-para-iniciar-automaticamente-no-boot)
+  - [Iniciar o serviço cron](#3-iniciar-o-serviço-cron)
+  - [Editando o arquivo de tarefas agendadas do cron](#4-editando-o-arquivo-de-tarefas-agendadas-do-cron)
+  - [Adicionando a linha no cron para execução a cada 5 minutos](#5-adicionando-a-linha-no-cron-para-execução-a-cada-5-minutos)
+  - [Salvando e saindo do editor](#6-salvando-e-saindo-do-editor)
 - [Parte 6: Testando](#parte-6-testando)
   - [Verificando os arquivos de log](#1-verificando-os-arquivos-de-log)
 - [Bônus](#bônus)
@@ -208,7 +211,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
 ### 3. **Criando o Script de verificação**
 
    ```bash
-   sudo valida_nginx.sh
+   sudo nano valida_nginx.sh
    ```
 
 ### 4. **Inserindo o código no arquivo**
@@ -256,15 +259,37 @@ sudo chmod +x valida_nginx.sh
 
 ## Parte 5. Automatizando o Script
 
-Vamos configurar a execução automática do scirpt a cada 5 minutos utilizando o **cron**
+Vamos configurar a execução automática do script a cada 5 minutos utilizando o **cron**.
 
-### 1. **Editando o arquivo de tarefas agendadas do cron**
+### 1. **Instalar o pacote `cron`**
+
+O **cron** não está instalado no **Amazon Linux 2** por padrão. Para instalá-lo, execute o seguinte comando:
+
+```bash
+sudo yum install cronie
+```
+
+### 2. **Ativar o serviço `cron` para iniciar automaticamente no boot:**
+
+```bash
+sudo systemctl enable crond
+```
+
+### 3. **Iniciar o serviço `cron`:**
+
+```bash
+sudo systemctl start crond
+```
+
+### 4. **Editando o arquivo de tarefas agendadas do cron**
+
+Abra o editor para editar o arquivo de tarefas agendadas do cron:
 
 ```bash
 sudo crontab -e
 ```
 
-### 2. **Adicionando a linha no cron para execução a cada 5 minutos**
+### 5. **Adicionando a linha no cron para execução a cada 5 minutos**
   
 ```bash
  */5 * * * * /usr/local/bin/scripts/valida_nginx.sh
@@ -275,7 +300,7 @@ sudo crontab -e
 O */5 * * * * no cron é uma expressão que define a frequência de execução do comando. Ela é dividida em cinco campos:
 ![](img/guia-cron.png)
 
-### 3. **Salvando e saindo do editor**
+### 6. **Salvando e saindo do editor**
 Salve o arquivo apertando ESC e depois digite **:wq**
 
 ---
