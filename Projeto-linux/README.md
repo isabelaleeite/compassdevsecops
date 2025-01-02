@@ -16,7 +16,6 @@
   - [Conectar à Instância EC2 via SSH](#6-conectar-à-instância-ec2-via-ssh)
 - [Parte 3: Instalando e configurando o Nginx](#parte-3-instalando-e-configurando-o-nginx)
   - [Atualização do Sistema](#1-atualização-do-sistema)
-  - [Instalar o repositório EPEL](#2-instalar-o-repositório-epel)
   - [Instalando o Nginx](#3-instalando-o-nginx)
   - [Verificando o Status do Nginx](#4-verificando-o-status-do-nginx)
   - [Habilitar o Nginx para iniciar automaticamente](#5-habilitar-o-nginx-para-iniciar-automaticamente)
@@ -157,19 +156,12 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    sudo yum update && sudo yum upgrade -y
    ```
 
-### 2. **Instalar o repositório EPEL**
-   O Nginx não está no repositório padrão do Amazon Linux 2, então você precisa habilitar o repositório EPEL.
-
-   ```bash
-   sudo amazon-linux-extras install epel -y
-   ```  
-
-### 3. **Instalando o Nginx**
+### 2. **Instalando o Nginx**
    ```
    sudo yum install nginx -y
    ```
 
-### 4. **Verificando o Status do Nginx**
+### 3. **Verificando o Status do Nginx**
    Se o Nginx estiver em execução, você verá uma saída indicando que o serviço está ativo (running).
      
    ```
@@ -183,12 +175,12 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    sudo systemctl start nginx
    ```
 
-### 5. **Habilitar o Nginx para iniciar automaticamente**
+### 4. **Habilitar o Nginx para iniciar automaticamente**
    ```
    sudo systemctl enable nginx
    ```
 
-### 6. **Acessando o Nginx**
+### 5. **Acessando o Nginx**
 
   Após a instalação e ativação do Nginx, você pode acessar a página inicial do Nginx no navegador, digitando o endereço IP público da sua instância EC2 na barra de endereços.
   
