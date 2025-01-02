@@ -237,11 +237,11 @@ SERVICO="NGINX"
 
 # Verifica o status do serviço e armazena dentro do arquivo de log
 if systemctl is-active --quiet nginx; then
-    echo "$DATA : [$SERVICO - Online] Servidor em execução." | sudo tee -a $LOG_ONLINE > /dev/null
-    echo "NGINX está online"
+    # Exibe a mensagem no terminal e grava no arquivo de log ao mesmo tempo
+    echo "$DATA : [$SERVICO - Online] Servidor em execução." | sudo tee -a $LOG_ONLINE
 else
-    echo "$DATA : [$SERVICO - Offline] Servidor fora de execução." | sudo tee -a $LOG_OFFLINE > /dev/null
-    echo "NGINX está offline"
+    # Exibe a mensagem no terminal e grava no arquivo de log ao mesmo tempo
+    echo "$DATA : [$SERVICO - Offline] Servidor fora de execução." | sudo tee -a $LOG_OFFLINE
 fi
 
 ```
@@ -368,10 +368,10 @@ DATA=\$(date "+%Y-%m-%d %H:%M:%S")
 CONTAINER="nginx-container"
 if sudo docker ps --filter "name=\$CONTAINER" --filter "status=running" | grep -q \$CONTAINER; then
     sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Online] Servidor em execução.' >> \$LOG_ONLINE"
-    echo "Nginx está online"
+    
 else
     sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Offline] Servidor parado.' >> \$LOG_OFFLINE"
-    echo "Nginx está offline"
+    
 fi
 EOL
 
