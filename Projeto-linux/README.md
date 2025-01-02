@@ -345,7 +345,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 # Iniciar container Nginx
-sudo docker run -d --name nginx-container -p 80:80 nginx
+sudo docker run -d --name nginx-container -p 80:80 -v /var/log/nginx:/var/log/nginx nginx
 
 # Criar diretório para scripts dentro da instância
 sudo mkdir -p /usr/local/bin/scripts
@@ -355,7 +355,7 @@ sudo chmod 755 /usr/local/bin/scripts
 cat <<EOL > /usr/local/bin/scripts/valida_nginx.sh
 #!/bin/bash
 
-# Diretórios de logs no container
+# Diretórios de logs no host
 LOG_ONLINE="/var/log/nginx/status_online.log"
 LOG_OFFLINE="/var/log/nginx/status_offline.log"
 
@@ -365,11 +365,11 @@ DATA=\$(date "+%Y-%m-%d %H:%M:%S")
 # Verifica se o container Nginx está em execução
 CONTAINER="nginx-container"
 if sudo docker ps --filter "name=\$CONTAINER" --filter "status=running" | grep -q \$CONTAINER; then
-    sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Online] Servidor em execução.' >> \$LOG_ONLINE"
-    
+    # Adiciona log em arquivo local no host para servidor em execução
+    echo "\$DATA : [Nginx Online] Servidor em execução." | sudo tee -a \$LOG_ONLINE
 else
-    sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Offline] Servidor parado.' >> \$LOG_OFFLINE"
-    
+    # Adiciona log em arquivo local no host para servidor parado
+    echo "\$DATA : [Nginx Offline] Servidor parado." | sudo tee -a \$LOG_OFFLINE
 fi
 EOL
 
@@ -383,9 +383,8 @@ sudo systemctl start crond
 
 # Configurar cron para rodar o script a cada 5 minutos
 echo "*/5 * * * * /usr/local/bin/scripts/valida_nginx.sh" | sudo tee -a /var/spool/cron/root
-
-
 ```
+
 ![](img/userdata.png)
 
 O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
