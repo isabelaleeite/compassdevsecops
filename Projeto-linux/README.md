@@ -337,74 +337,70 @@ Na criação da Instância EC2, clique em **Detalhes avançados** e no campo **D
 
 ```bash
 #!/bin/bash
-
-# Atualizar o sistema
+# Atualizar pacotes
 sudo yum update -y
 
-# Instalar o Docker
+# Instalar Docker
+sudo amazon-linux-extras enable docker
 sudo yum install -y docker
+sudo systemctl enable docker
+sudo systemctl start docker
 
-# Adicionar o usuário "ec2-user" ao grupo "docker" para permitir o uso do Docker sem sudo
-sudo usermod -a -G docker ec2-user
-
-# Ativar e iniciar o serviço Docker
-sudo systemctl enable docker.service
-sudo systemctl start docker.service
-
-# Iniciar o Nginx dentro de um container Docker
+# Iniciar container Nginx
 sudo docker run -d --name nginx-container -p 80:80 nginx
 
-# Exibir o status do container Nginx
-sudo docker ps
+# Criar diretório para scripts dentro da instância
+sudo mkdir -p /usr/local/bin/scripts
+sudo chmod 755 /usr/local/bin/scripts
+
+# Criar script de validação de logs
+cat <<EOL > /usr/local/bin/scripts/valida_nginx.sh
+#!/bin/bash
+
+# Diretórios de logs no container
+LOG_ONLINE="/var/log/nginx/status_online.log"
+LOG_OFFLINE="/var/log/nginx/status_offline.log"
+
+# Armazena data e hora atual
+DATA=\$(date "+%Y-%m-%d %H:%M:%S")
+
+# Verifica se o container Nginx está em execução
+CONTAINER="nginx-container"
+if sudo docker ps --filter "name=\$CONTAINER" --filter "status=running" | grep -q \$CONTAINER; then
+    sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Online] Servidor em execução.' >> \$LOG_ONLINE"
+    echo "Nginx está online"
+else
+    sudo docker exec \$CONTAINER sh -c "echo '\$DATA : [Nginx Offline] Servidor parado.' >> \$LOG_OFFLINE"
+    echo "Nginx está offline"
+fi
+EOL
+
+# Deixar o script executável
+sudo chmod +x /usr/local/bin/scripts/valida_nginx.sh
+
+# Instalar cron para automatizar execução
+sudo yum install -y cronie
+sudo systemctl enable crond
+sudo systemctl start crond
+
+# Configurar cron para rodar o script a cada 5 minutos
+echo "*/5 * * * * /usr/local/bin/scripts/valida_nginx.sh" | sudo tee -a /var/spool/cron/root
+
+
 ```
 ![](img/userdata.png)
 
 O **User Data** permite automatizar a configuração e execução de scripts ou comandos durante a inicialização de uma instância EC2, facilitando a instalação e configuração de software sem a necessidade de intervenção manual.
 
-## Parte 2. Criação do Script
-
-Repita o **Passo 4** anterior, porém, vamos modificar o script para usar o Docker e rodar o Nginx dentro de um container. Insira o script abaixo e continue os processos.
 
 ```bash
-#!/bin/bash
-
-# Definindo variáveis de saída para arquivos de log
-LOG_ONLINE="/var/log/nginx-logs/status_online.log"
-LOG_OFFLINE="/var/log/nginx-logs/status_offline.log"
-
-# Cria o diretório de logs, se não existir
-sudo mkdir -p /var/log/nginx-logs
-sudo touch $LOG_ONLINE
-sudo touch $LOG_OFFLINE
-sudo chmod 644 $LOG_ONLINE $LOG_OFFLINE
-
-# Armazena a data e hora atual
-DATA=$(date "+%Y-%m-%d %H:%M:%S")
-
-# Nome do container Docker que executa o Nginx
-CONTAINER_NAME="nginx-container"
-
-# Verifica o status do container Docker
-if sudo docker ps --filter "name=$CONTAINER_NAME" --filter "status=running" | grep -q $CONTAINER_NAME; then
-    echo "$DATA : [Nginx - Online] Container em execução." | sudo tee -a $LOG_ONLINE > /dev/null
-    echo "Nginx está online no container."
-else
-    echo "$DATA : [Nginx - Offline] Container parado." | sudo tee -a $LOG_OFFLINE > /dev/null
-    echo "Nginx está offline no container."
-fi
-```
-![](img/script-docker.png)
-
-**Continue os passos e o Nginx estará funcionando corretamente, com verificação a cada 5 minutos.** 
-
-```bash
-cat /var/log/nginx-logs/status_online.log
+sudo docker exec nginx-container cat /var/log/nginx/status_online.log
 ```
 
 ![](img/log-servidor-online-container.png)
 
 ```bash
-cat /var/log/nginx-logs/status_offline.log
+sudo docker exec nginx-container cat /var/log/nginx/status_offline.log
 ```
 
 ![](img/log-servidor-offline-docker.png)
