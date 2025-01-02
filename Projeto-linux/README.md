@@ -203,9 +203,7 @@ Esse processo garante que sua instância EC2 esteja acessível para administraç
    Por boas práticas, scripts que têm impacto global no sistema devem ser armazenados em /usr/local/bin.
        
    ```bash
-   cd /usr/local/bin
-   sudo mkdir scripts
-   cd scripts
+   sudo mkdir -p /usr/local/bin/scripts && cd /usr/local/bin/scripts
    ```
 
 ### 3. **Criando o Script de verificação**
