@@ -1,31 +1,24 @@
 # Índice
 
 - [Descrição](#descrição)
+- [Arquitetura](#arquitetura)
 - [Parte 1: Configuração da VPC](#parte-1-configuração-da-vpc)
-  - [Criar a VPC](#1-criar-a-vpc)
-  - [Configurar Sub-redes e Tabelas de Rota](#2-configurar-sub-redes-e-tabelas-de-rota)
 - [Parte 2: Configuração de Security Groups](#parte-2-configuração-de-security-groups)
-  - [Configuração do Security Group para EC2](#1-configuração-do-security-group-para-ec2)
-  - [Configuração do Security Group para RDS](#2-configuração-do-security-group-para-rds)
-  - [Configuração do Security Group para Load Balancer](#3-configuração-do-security-group-para-load-balancer)
 - [Parte 3: Configuração do SSM](#parte-3-configuração-do-ssm)
-  - [Instalar o Agente SSM nas Instâncias EC2](#1-instalar-o-agente-ssm-nas-instâncias-ec2)
-  - [Configuração de Permissões do SSM](#2-configuração-de-permissões-do-ssm)
 - [Parte 4: Criação do Banco de Dados no RDS](#parte-4-criação-do-banco-de-dados-no-rds)
-  - [Configurar o Banco de Dados MySQL no RDS](#1-configurar-o-banco-de-dados-mysql-no-rds)
 - [Parte 5: Configuração do EFS](#parte-5-configuração-do-efs)
-  - [Criar e Montar o EFS nas Instâncias EC2](#1-criar-e-montar-o-efs-nas-instâncias-ec2)
 - [Parte 6: Configuração do Template de Instância EC2](#parte-6-configuração-do-template-de-instância-ec2)
-  - [Instalar Docker nas Instâncias EC2](#1-instalar-docker-nas-instâncias-ec2)
-  - [Configurar o User Data para Instâncias EC2](#2-configurar-o-user-data-para-instâncias-ec2)
 - [Parte 7: Configuração do Elastic Load Balancer](#parte-7-configuração-do-elastic-load-balancer)
-  - [Criar e Configurar o ELB](#1-criar-e-configurar-o-elb)
 - [Parte 8: Configuração do Auto Scaling Group](#parte-8-configuração-do-auto-scaling-group)
-  - [Criar e Configurar o Auto Scaling Group](#1-criar-e-configurar-o-auto-scaling-group)
+- [Parte 9: Testes](#parte-9-testes)
 
 ## **Descrição**
 
 Este projeto tem como objetivo criar uma infraestrutura escalável e altamente disponível para uma aplicação WordPress na AWS. A arquitetura inclui instâncias EC2 configuradas com Docker, um banco de dados MySQL no RDS, o uso do EFS para armazenar arquivos estáticos e a implementação de um Load Balancer e Auto Scaling Group para garantir a alta disponibilidade e escalabilidade. Toda a configuração será realizada por meio da AWS, com a documentação detalhando o processo de configuração e implementação.
+
+## **Arquitetura**
+
+![](img/arquitetura-aws.png)
 
 ## Parte 1: Configuração da VPC
 
@@ -63,6 +56,8 @@ Este projeto tem como objetivo criar uma infraestrutura escalável e altamente d
    - **Destination**: `0.0.0.0/0`
    - **Target**: Selecione **NAT Gateway** e escolha o ID do NAT Gateway que você criou (por exemplo, `wp-natgateway`).
 5. Clique em **Save routes**.
+
+![](vpc.png)
 
 ### 1.4 Concluir a Configuração
 Agora que a VPC foi criada com suas sub-redes públicas e privadas, o NAT Gateway está configurado e as rotas foram associadas corretamente, a infraestrutura básica está pronta para continuar com a configuração de outros recursos, como instâncias EC2, RDS e EFS.
@@ -176,6 +171,7 @@ Agora o banco de dados RDS está configurado, com o MySQL 8.4.3, e pronto para s
 6. **Mount targets**:
    - Em **Availability Zones**, selecione a **subnet privada** de cada zona de disponibilidade para garantir que o EFS esteja disponível apenas na sub-rede privada.
    - Em **Security groups**, remova o grupo de segurança padrão e insira o grupo de segurança **SG-EFS** que você criou anteriormente.
+   ![](img/efs.png)
 7. Clique em **Create** para criar o EFS.
 
 ### 5.2 Obter o DNS do EFS
@@ -305,7 +301,7 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 
 ## Parte 8: Configuração do Auto Scaling Group
 
-### 8.2 Criar e Configurar o Auto Scaling Group
+### 8 Criar e Configurar o Auto Scaling Group
 1. No menu à esquerda, vá em **Auto Scaling Groups** e clique em **Create Auto Scaling group**.
 2. Preencha as configurações conforme abaixo:
    - **Auto Scaling group name**: `wordpress-asg`
@@ -321,4 +317,22 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 4. Configure as notificações por email, caso desejado.
 5. Clique em **Create Auto Scaling group** para finalizar a criação do Auto Scaling Group.
 
+## Parte 9: Testes
+
+### 9.1 Verificar o estado do Load Balancer
+1. Aguarde as instâncias EC2 serem inicializadas e o Auto Scaling Group realizar a distribuição das instâncias.
+2. Vá até o **Load Balancer** no Console de EC2 e verifique se o estado do Load Balancer está como **Active**.
+3. Certifique-se de que o status de saúde das instâncias no **Target Group** também esteja saudável (Healthy).
+
+### 9.2 Acessar a aplicação pelo Load Balancer
+1. Copie o **DNS name** do **Load Balancer** gerado.
+2. Abra o seu navegador e cole o **DNS name** do Load Balancer na barra de endereços.
+3. Se tudo estiver configurado corretamente, você deverá ver a página inicial do **WordPress**.
+
+### 9.3 Configurar o WordPress
+1. Ao acessar o WordPress pela primeira vez, será solicitado que você configure uma conta de login.
+2. Siga o assistente de instalação do WordPress para configurar o banco de dados, escolher o idioma e definir as credenciais de administrador.
+3. Após a configuração, você poderá acessar o painel administrativo do WordPress para gerenciar sua aplicação.
+
+Pronto! A aplicação WordPress está configurada, escalável e funcionando corretamente.
 
