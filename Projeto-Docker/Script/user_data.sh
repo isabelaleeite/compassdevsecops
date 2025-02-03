@@ -32,7 +32,7 @@ sudo mkdir -p /mnt/efs/wordpress
 sudo chmod -R 777 /mnt/efs
 
 # Montar o EFS automaticamente
-echo "fs-02fde8c2b251eb9d3.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+echo "fs-0c704a1d40eb3c9ef.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 sudo mount -a
 
 # Criar o arquivo docker-compose.yaml com os volumes corretos
@@ -51,7 +51,7 @@ services:
     environment:
       WORDPRESS_DB_HOST: "database-01.c50ic0a6of2e.us-east-1.rds.amazonaws.com"
       WORDPRESS_DB_USER: "admin"
-      WORDPRESS_DB_PASSWORD: "2DLEmRydTNVcYzPATuXo"
+      WORDPRESS_DB_PASSWORD: "inxqDfECHODrLGNY7CV5"
       WORDPRESS_DB_NAME: "wordpressdb"
 EOL
 
