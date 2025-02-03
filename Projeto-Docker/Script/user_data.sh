@@ -37,7 +37,6 @@ sudo mount -a
 
 # Criar o arquivo docker-compose.yaml com as variáveis de ambiente
 cat <<EOL > /home/ec2-user/docker-compose.yaml
-version: '3.8'
 
 services:
   wordpress:
@@ -48,16 +47,19 @@ services:
       - /mnt/efs/wordpress:/var/www/html  # Monta os arquivos do WordPress no EFS
     ports:
       - "80:80"
+    env_file:
+      - /home/ec2-user/.env  # Adicionando referência ao arquivo .env
     environment:
-      WORDPRESS_DB_HOST: "\${WORDPRESS_DB_HOST}"
-      WORDPRESS_DB_USER: "\${WORDPRESS_DB_USER}"
-      WORDPRESS_DB_PASSWORD: "\${WORDPRESS_DB_PASSWORD}"
-      WORDPRESS_DB_NAME: "\${WORDPRESS_DB_NAME}"
+      WORDPRESS_DB_HOST: "${WORDPRESS_DB_HOST}"
+      WORDPRESS_DB_USER: "${WORDPRESS_DB_USER}"
+      WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD}"
+      WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME}"
+
 EOL
 
 # Criar um arquivo de variáveis de ambiente para o Docker Compose
 cat <<EOL > /home/ec2-user/.env
-WORDPRESS_DB_HOST="database-01.c50ic0a6of2e.us-east-1.rds.amazonaws.com"
+WORDPRESS_DB_HOST="seu-endereço-database.rds.amazonaws.com"
 WORDPRESS_DB_USER="admin"
 WORDPRESS_DB_PASSWORD="sua_senha_secreta"
 WORDPRESS_DB_NAME="wordpressdb"
