@@ -120,7 +120,8 @@ Agora, os **Security Groups** estarão configurados e prontos para uso com as in
 2. No menu à esquerda, clique em **Roles** e depois em **Create role**.
 3. Selecione **AWS service** como tipo de entidade confiável.
 4. Escolha **EC2** como o serviço que usará a role.
-5. Na lista de permissões, selecione **AmazonEC2RoleforSSM** para permitir que a instância EC2 utilize o Systems Manager.
+5. Na lista de permissões, selecione **Amazon EC2 Role for SSM** para permitir que a instância EC2 utilize o Systems Manager.
+![](Img/iam-ssm.png)
 6. Clique em **Next: Tags**. (Você pode adicionar tags se necessário, mas isso é opcional).
 7. Clique em **Next: Review**.
 8. Dê um nome à função, como `EC2-SSM-Role`.
@@ -238,10 +239,10 @@ Agora o sistema de arquivos EFS está configurado e pronto para ser montado nas 
         sudo chmod -R 777 /mnt/efs
 
         # Montar o EFS automaticamente
-        echo "-insira-o-endereço-efs:/ /mnt/efs nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+        echo "fs-0c704a1d40eb3c9ef.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
         sudo mount -a
 
-        # Criar o arquivo docker-compose.yaml com os volumes corretos
+        # Criar o arquivo docker-compose.yaml com as variáveis de ambiente
         cat <<EOL > /home/ec2-user/docker-compose.yaml
         version: '3.8'
 
@@ -255,16 +256,25 @@ Agora o sistema de arquivos EFS está configurado e pronto para ser montado nas 
             ports:
             - "80:80"
             environment:
-            WORDPRESS_DB_HOST: "insira-o-host-do-RDS"
-            WORDPRESS_DB_USER: "insira-user"
-            WORDPRESS_DB_PASSWORD: "insira-senha"
-            WORDPRESS_DB_NAME: "wordpressdb"
+            WORDPRESS_DB_HOST: "\${WORDPRESS_DB_HOST}"
+            WORDPRESS_DB_USER: "\${WORDPRESS_DB_USER}"
+            WORDPRESS_DB_PASSWORD: "\${WORDPRESS_DB_PASSWORD}"
+            WORDPRESS_DB_NAME: "\${WORDPRESS_DB_NAME}"
         EOL
 
-        # Inicializar o container do WordPress com Docker Compose
-        sudo -u ec2-user docker-compose -f /home/ec2-user/docker-compose.yaml up -d
+        # Criar um arquivo de variáveis de ambiente para o Docker Compose
+        cat <<EOL > /home/ec2-user/.env
+        WORDPRESS_DB_HOST="database-01.c50ic0a6of2e.us-east-1.rds.amazonaws.com"
+        WORDPRESS_DB_USER="admin"
+        WORDPRESS_DB_PASSWORD="sua_senha_secreta"
+        WORDPRESS_DB_NAME="wordpressdb"
+        EOL
+
+        # Inicializar o container do WordPress com Docker Compose, carregando as variáveis
+        sudo -u ec2-user bash -c "cd /home/ec2-user && docker-compose --env-file .env -f docker-compose.yaml up -d"
 
         echo "Instalação concluída! WordPress está rodando e conectado ao RDS."
+
 
      ```
 **Observação**: Substitua o endereço EFS pelo o seu, e inserir suas informações no Banco de Dados.
@@ -285,6 +295,7 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
    - **Port**: **80**
    - **VPC**: Selecione a VPC que você criou anteriormente.
 4. Clique em **Create** para criar o grupo de destino.
+![](Img/wordpress-tg.png)
 
 ### 7.2 Criar o Load Balancer
 1. Vá para **Load Balancers** no Console de Gerenciamento da AWS.
@@ -298,7 +309,7 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
    - **Security Groups**: Selecione o **Security Group** `ApplicationLoadBalancer-SG`.
 4. Em **Listeners and routing**, selecione o grupo de destino **wordpress-tg** que você criou anteriormente.
 5. Clique em **Create load balancer** para finalizar a criação do Load Balancer.
-
+![](Img/elb.png)
 ## Parte 8: Configuração do Auto Scaling Group
 
 ### 8 Criar e Configurar o Auto Scaling Group
@@ -306,13 +317,17 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 2. Preencha as configurações conforme abaixo:
    - **Auto Scaling group name**: `wordpress-asg`
    - **Launch template**: Escolha o **Launch template** que você criou anteriormente (`wordpress-temp`).
+
    - **VPC**: Selecione a VPC que você criou.
    - **Availability Zones**: Selecione as **zonas privadas** da sua VPC.
+   ![](Img/asg-vpc.png)
    - **Attach to an existing load balancer**: Marque essa opção e selecione o **Load Balancer** `wordpress-lb` e o grupo de destino `wordpress-tg`.
+   ![](Img/asg-alb.png)
    - **Health checks**: Ative a opção **Elastic Load Balancing health checks**.
    - **Desired capacity**: 2
    - **Minimum capacity**: 1
    - **Maximum capacity**: 2
+   ![](Img/asg-group-size.png)
 3. Clique em **Next** para configurar as notificações, se necessário.
 4. Configure as notificações por email, caso desejado.
 5. Clique em **Create Auto Scaling group** para finalizar a criação do Auto Scaling Group.
@@ -329,7 +344,14 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 2. Abra o seu navegador e cole o **DNS name** do Load Balancer na barra de endereços.
 3. Se tudo estiver configurado corretamente, você deverá ver a página inicial do **WordPress**.
 
-### 9.3 Configurar o WordPress
+### 9.3 Acessar as instâncias EC2 pelo SSM
+1. Vá até o **SSM** (AWS Systems Manager) no Console de Gerenciamento da AWS.
+2. No menu à esquerda, clique em **Instances & Nodes**.
+3. Selecione **Managed Instances** e procure pelas instâncias EC2 que estão sendo gerenciadas pelo SSM.
+4. Clique na instância que deseja acessar e, em seguida, clique em **Connect**.
+5. Escolha a opção **Session Manager** para iniciar uma sessão na instância EC2 diretamente pelo console, sem a necessidade de uma chave SSH.
+![](Img/ec2-ssm.png)   
+### 9.4 Configurar o WordPress
 1. Ao acessar o WordPress pela primeira vez, será solicitado que você configure uma conta de login.
 2. Siga o assistente de instalação do WordPress para configurar o banco de dados, escolher o idioma e definir as credenciais de administrador.
 3. Após a configuração, você poderá acessar o painel administrativo do WordPress para gerenciar sua aplicação.

@@ -35,7 +35,7 @@ sudo chmod -R 777 /mnt/efs
 echo "fs-0c704a1d40eb3c9ef.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 sudo mount -a
 
-# Criar o arquivo docker-compose.yaml com os volumes corretos
+# Criar o arquivo docker-compose.yaml com as variáveis de ambiente
 cat <<EOL > /home/ec2-user/docker-compose.yaml
 version: '3.8'
 
@@ -49,13 +49,21 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: "database-01.c50ic0a6of2e.us-east-1.rds.amazonaws.com"
-      WORDPRESS_DB_USER: "admin"
-      WORDPRESS_DB_PASSWORD: "inxqDfECHODrLGNY7CV5"
-      WORDPRESS_DB_NAME: "wordpressdb"
+      WORDPRESS_DB_HOST: "\${WORDPRESS_DB_HOST}"
+      WORDPRESS_DB_USER: "\${WORDPRESS_DB_USER}"
+      WORDPRESS_DB_PASSWORD: "\${WORDPRESS_DB_PASSWORD}"
+      WORDPRESS_DB_NAME: "\${WORDPRESS_DB_NAME}"
 EOL
 
-# Inicializar o container do WordPress com Docker Compose
-sudo -u ec2-user docker-compose -f /home/ec2-user/docker-compose.yaml up -d
+# Criar um arquivo de variáveis de ambiente para o Docker Compose
+cat <<EOL > /home/ec2-user/.env
+WORDPRESS_DB_HOST="database-01.c50ic0a6of2e.us-east-1.rds.amazonaws.com"
+WORDPRESS_DB_USER="admin"
+WORDPRESS_DB_PASSWORD="sua_senha_secreta"
+WORDPRESS_DB_NAME="wordpressdb"
+EOL
+
+# Inicializar o container do WordPress com Docker Compose, carregando as variáveis
+sudo -u ec2-user bash -c "cd /home/ec2-user && docker-compose --env-file .env -f docker-compose.yaml up -d"
 
 echo "Instalação concluída! WordPress está rodando e conectado ao RDS."
