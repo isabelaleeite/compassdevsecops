@@ -1,8 +1,9 @@
-# Repositório de Projetos - Estágio DevSecOps
+## Projeto Docker - Compass Uol
 
-Este repositório reúne os projetos desenvolvidos durante o estágio na Compass UOL, aplicando práticas de DevSecOps em ambientes Linux, AWS e automação DevOps.  
+O projeto visa implementar uma aplicação WordPress escalável e altamente disponível na AWS, utilizando duas instâncias EC2 configuradas com Docker através do user data. A arquitetura inclui um banco de dados RDS MySQL, o uso do AWS EFS para armazenar arquivos estáticos, e a configuração de um Load Balancer e Auto Scaling Group para gerenciar o tráfego e garantir a escalabilidade e alta disponibilidade da aplicação.
 
-## Projeto Atual
-- **Linux:** Configurações, automação e gerenciamento de sistemas Linux.  
 
-Novos projetos serão adicionados ao longo do estágio.
+
+
+
+
