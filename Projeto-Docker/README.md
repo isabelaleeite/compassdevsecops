@@ -57,7 +57,7 @@ Este projeto tem como objetivo criar uma infraestrutura escalável e altamente d
    - **Target**: Selecione **NAT Gateway** e escolha o ID do NAT Gateway que você criou (por exemplo, `wp-natgateway`).
 5. Clique em **Save routes**.
 
-![](Img/vpc.png)
+![](vpc.png)
 
 ### 1.4 Concluir a Configuração
 Agora que a VPC foi criada com suas sub-redes públicas e privadas, o NAT Gateway está configurado e as rotas foram associadas corretamente, a infraestrutura básica está pronta para continuar com a configuração de outros recursos, como instâncias EC2, RDS e EFS.
@@ -172,7 +172,7 @@ Agora o banco de dados RDS está configurado, com o MySQL 8.4.3, e pronto para s
 6. **Mount targets**:
    - Em **Availability Zones**, selecione a **subnet privada** de cada zona de disponibilidade para garantir que o EFS esteja disponível apenas na sub-rede privada.
    - Em **Security groups**, remova o grupo de segurança padrão e insira o grupo de segurança **SG-EFS** que você criou anteriormente.
-   ![](Img/efs.png)
+   ![](img/efs.png)
 7. Clique em **Create** para criar o EFS.
 
 ### 5.2 Obter o DNS do EFS
@@ -357,4 +357,5 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 3. Após a configuração, você poderá acessar o painel administrativo do WordPress para gerenciar sua aplicação.
 
 Pronto! A aplicação WordPress está configurada, escalável e funcionando corretamente.
+
 
