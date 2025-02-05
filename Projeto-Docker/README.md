@@ -19,7 +19,7 @@ Este projeto tem como objetivo criar uma infraestrutura escalável e altamente d
 
 ## **Arquitetura**
 
-![](Img/arquitetura-diagrama.png.png)
+![](Img/arquitetura-diagrama.png)
 
 ## Parte 1: Configuração da VPC
 
