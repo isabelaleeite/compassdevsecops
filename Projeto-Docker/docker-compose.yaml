@@ -1,0 +1,14 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    restart: always
+    volumes:
+      - $EFS_PATH:/var/www/html  # Monta os arquivos do WordPress no EFS
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: "$WORDPRESS_DB_HOST"
+      WORDPRESS_DB_USER: "$WORDPRESS_DB_USER"
+      WORDPRESS_DB_PASSWORD: "$WORDPRESS_DB_PASSWORD"
+      WORDPRESS_DB_NAME: "$WORDPRESS_DB_NAME"
