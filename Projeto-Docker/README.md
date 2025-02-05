@@ -365,22 +365,24 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
    - **VPC**: Selecione a VPC que você criou.
    - **Availability Zones**: Selecione as **zonas privadas** da sua VPC.
 
-   ![](Img/asg-vpc.png)
+ ![](Img/asg-vpc.png)
 
    - **Attach to an existing load balancer**: Marque essa opção e selecione o **Load Balancer** `wordpress-lb` e o grupo de destino `wordpress-tg`.
 
-   ![](Img/asg-alb.png)
+ ![](Img/asg-alb.png)
 
    - **Health checks**: Ative a opção **Elastic Load Balancing health checks**.
    - **Desired capacity**: 2
    - **Minimum capacity**: 1
    - **Maximum capacity**: 2
 
-   ![](Img/asg-group-size.png)
+![](Img/asg-group-size.png)
 
 3. Clique em **Next** para configurar as notificações, se necessário.
 4. Configure as notificações por email, caso desejado.
 5. Clique em **Create Auto Scaling group** para finalizar a criação do Auto Scaling Group.
+
+![](Img/asg-group.png)
 
 ## Parte 9: Testes
 
@@ -415,7 +417,7 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 
 Pronto! A aplicação WordPress está configurada, escalável e funcionando corretamente.
 
-# Referências
+# Parte 10: Referências
 
 ## Documentação AWS
 - [EC2](https://docs.aws.amazon.com/ec2/index.html)
