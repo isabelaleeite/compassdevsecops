@@ -11,7 +11,7 @@
 - [Parte 7: Configuração do Elastic Load Balancer](#parte-7-configuração-do-elastic-load-balancer)
 - [Parte 8: Configuração do Auto Scaling Group](#parte-8-configuração-do-auto-scaling-group)
 - [Parte 9: Testes](#parte-9-testes)
-- [Parte 10: Referências](#parte-10-referências)
+- [Referências](#referências)
 
 ## **Descrição**
 
@@ -19,7 +19,7 @@ Este projeto tem como objetivo criar uma infraestrutura escalável e altamente d
 
 ## **Arquitetura**
 
-![](Img/arquitetura-diagrama.png.png)
+![](Img/arquitetura-diagrama.png)
 
 ## Parte 1: Configuração da VPC
 
@@ -417,7 +417,7 @@ Agora temos o template de lançamento EC2 configurado com o Amazon Linux 2, as c
 
 Pronto! A aplicação WordPress está configurada, escalável e funcionando corretamente.
 
-# Parte 10: Referências
+# Referências
 
 ## Documentação AWS
 - [EC2](https://docs.aws.amazon.com/ec2/index.html)
