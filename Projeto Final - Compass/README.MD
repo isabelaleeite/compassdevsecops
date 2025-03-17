@@ -12,29 +12,21 @@
 
 ---
 
-Esta proposta tem como objetivo demonstrar como a migração da infraestrutura on-premises para a AWS resolverá os desafios atuais do eCommerce da Fast Engineering S/A, agregando robustez, escalabilidade, segurança e redução de custos. A transição será realizada em duas etapas: uma inicial de Lift-and-Shift e, em seguida, a modernização com Kubernetes (EKS).
+Esta proposta tem como objetivo demonstrar como a migração da infraestrutura on-premises para a AWS resolverá os desafios atuais do E-commerce da Fast Engineering S/A, agregando robustez, escalabilidade, segurança e redução de custos. A transição será realizada em duas etapas: uma inicial de Lift-and-Shift e, em seguida, a modernização com Kubernetes (EKS).
 
 ---
 
 ## 0. Índice
 
-[0. Índice](https://www.notion.so/0-ndice-1b849173e3c7809bbb1ae32c3fe19c9e?pvs=21) 
-
-[1. Contexto do Projeto](https://www.notion.so/1-Contexto-do-Projeto-1b849173e3c780ef9033fafddd5c4f0f?pvs=21) 
-
-[2. Atividades Necessárias para a Migração](https://www.notion.so/2-Atividades-Necess-rias-para-a-Migra-o-1b849173e3c780cea00cf3ed676336c8?pvs=21) 
-
-[3. Ferramentas Utilizadas](https://www.notion.so/3-Ferramentas-Utilizadas-1b849173e3c780cca4c8f9b2a0b02185?pvs=21) 
-
-[4. Diagrama da Infraestrutura na AWS](https://www.notion.so/4-Diagrama-da-Infraestrutura-na-AWS-1b849173e3c7806b92f1ccd59db3b51e?pvs=21) 
-
-[5. Garantia dos Requisitos de Segurança](https://www.notion.so/5-Garantia-dos-Requisitos-de-Seguran-a-1b849173e3c780ef8ae3ddb26ce738d7?pvs=21) 
-
-[6. Processo de Backup](https://www.notion.so/6-Processo-de-Backup-1b849173e3c7807389bafaa7d4666818?pvs=21) 
-
-[7. Custo da Infraestrutura na AWS (AWS Calculator)](https://www.notion.so/7-Custo-da-Infraestrutura-na-AWS-AWS-Calculator-1b849173e3c780de8025faad7a9af04c?pvs=21) 
-
-[8. Conclusão](#Conclusão) 
+0. [Índice](#índice)
+1. [Contexto do Projeto](#contexto-do-projeto)
+2. [Atividades Necessárias para a Migração](#atividades-necessárias-para-a-migração)
+3. [Ferramentas Utilizadas](#ferramentas-utilizadas)
+4. [Diagrama da Infraestrutura na AWS](#diagrama-da-infraestrutura-na-aws)
+5. [Garantia dos Requisitos de Segurança](#garantia-dos-requisitos-de-segurança)
+6. [Processo de Backup](#processo-de-backup)
+7. [Custo da Infraestrutura na AWS (AWS Calculator)](#custo-da-infraestrutura-na-aws-aws-calculator)
+8. [Conclusão](#conclusão)
 
 ---
 
@@ -199,17 +191,23 @@ A estimativa de custos, baseada em simulações e informações atuais da AWS é
 
 ### Etapa 2 – Modernização com Kubernetes
 
-| Recurso                         | Especificação                                                | Custo Mensal Estimado (USD) |
-| -------------------------------- | ------------------------------------------------------------ | --------------------------- |
-| **EKS**                          | Cluster gerenciado                                           | ~$73.00                     |
-| **ElastiCache**                  | cache.t4g.medium (para Redis)                                | ~$32.12                     |
-| **CloudFront**                   | 100 GB de saída, 30 GB de origem                              | ~$14.75                     |
-| **Route 53**                     | 2 Zonas Hospedadas, 1 Domínio                                 | ~$2.00                      |
-| **AWS Backup**                   | Backup de recursos (2TB de dados armazenados, 5GB de backups mensais) | ~$3.55                      |
-| **AWS CloudTrail**               | Monitoramento de eventos (1 trilha de gerenciamento de gravação, 1 trilha do S3, 1 trilha do Lambda, 1 milhão de eventos, 1 milhão de unidades de dados) | ~$1.00                      |
-| **CloudWatch**                   | Monitoramento de logs e métricas (5GB de logs consumidos, 2GB de logs entregues ao S3, 5GB de dados analisados, 50 solicitações de API) | ~$12.87                     |
-| **GuardDuty**                    | Monitoramento de segurança (valor não especificado)         | (Valor não especificado)    |
-| **Total Aproximado**             | ———————————————                                              | **~$125/mês**               |
+| Recurso                              | Especificação                                 | Custo Mensal Estimado (USD) |
+| ---------------------------------- | --------------------------------------------- | --------------------------- |
+| **Amazon RDS for MySQL**           | Banco de dados, Armazenamento 500GB, Instância db.t4g.xlarge, Multi-AZ, SSD gp3 | 391,63 USD                  |
+| **Amazon EKS**                     | 1 cluster, 1 nó híbrido                      | 73,00 USD                   |
+| **Amazon EC2**                     | Instância t4g.medium, 2 instâncias, 20GB EBS  | 34,01 USD                   |
+| **Amazon ElastiCache**             | Tipo cache.t4g.medium, Redis, 1 nó           | 32,12 USD                   |
+| **Amazon Virtual Private Cloud**   | 1 gateway NAT, 1 IP público, 1TB de tráfego de entrada | 38,75 USD                   |
+| **Elastic Load Balancing**         | 1 Application Load Balancer                  | 22,27 USD                   |
+| **Amazon CloudFront**              | 100GB de dados de saída, 30GB de origem       | 14,75 USD                   |
+| **Amazon Route 53**                | 2 zonas hospedadas, 1 domínio                | 2,00 USD                    |
+| **AWS Backup**                     | Backup de 20GB, retenção de 25 dias          | 3,55 USD                    |
+| **AWS CloudTrail**                 | 1 trilha de gerenciamento, 1 milhão de eventos | 1,00 USD                    |
+| **Amazon CloudWatch**              | 5GB de logs consumidos, 5GB de dados analisados | 12,87 USD                   |
+| **Amazon GuardDuty**               | 2000 eventos do AWS CloudTrail, 5GB de logs de fluxo da VPC | 17,16 USD                   |
+| **AWS Web Application Firewall (WAF)** | 2 listas ACL, 5 regras por ACL               | 50,00 USD                   |
+| **Total Aproximado**               | —                                            | **~681,11 USD/mês**         |
+
 
 
 Os valores apresentados podem variar conforme o uso real e eventuais ajustes nas configurações; a simulação foi realizada utilizando o AWS Calculator, considerando um cenário de produção com 1 ano de reserva para instâncias críticas.
