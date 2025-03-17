@@ -227,7 +227,7 @@ A estimativa de custos, baseada em simulações e informações atuais da AWS, �
 
 - Os custos foram estimados com base no plano On-Demand de 1 ano.
 - Ambientes de produção serão hospedados na região US East (N. Virginia) (us-east-1).
-- A estimativa detalhada de custos pode ser acessada em: [***Calculadora da AWS***](https://calculator.aws/#/estimate?id=c5cd66187cae57181e1a2637d0d0d508ae41fafd).
+- A estimativa detalhada de custos pode ser acessada em: [***Calculadora da AWS***](https://calculator.aws/#/estimate?id=e1c4f80c0bf17b83672142955fc03f6dc56d3ba8).
 
 ---
 
