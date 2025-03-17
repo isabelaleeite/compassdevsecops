@@ -1,6 +1,6 @@
 # Migração para AWS: Proposta Técnica e Comercial
 
-![image.png](image.png)
+![image.png](img/image.png)
 
 **Cliente:** Fast Engineering S/A
 
@@ -196,9 +196,6 @@ A estimativa de custos, baseada em simulações e informações atuais da AWS é
 | **Elastic Load Balancer**         | 1 Application Load Balancer                   | ~$22.27                     |
 | **VPC (Redes)**                   | 1 Gateway NAT, 1 IP público                   | ~$38.75                     |
 | **WAF (Web Application Firewall)**| Proteção da Web                               | ~$50.00                     |
-
-
-### Etapa 2 – Modernização com Kubernetes
 
 ### Etapa 2 – Modernização com Kubernetes
 
