@@ -19,13 +19,13 @@ Esta proposta tem como objetivo demonstrar como a migração da infraestrutura o
 ## 0. Índice
 
 0. [Índice](#índice)
-1. [Contexto do Projeto](#contexto-do-projeto)
-2. [Atividades Necessárias para a Migração](#atividades-necessárias-para-a-migração)
-3. [Ferramentas Utilizadas](#ferramentas-utilizadas)
-4. [Diagrama da Infraestrutura na AWS](#diagrama-da-infraestrutura-na-aws)
-5. [Garantia dos Requisitos de Segurança](#garantia-dos-requisitos-de-segurança)
-6. [Processo de Backup](#processo-de-backup)
-7. [Custo da Infraestrutura na AWS (AWS Calculator)](#custo-da-infraestrutura-na-aws-aws-calculator)
+1. [Contexto do Projeto](#1-contexto-do-projeto)
+2. [Atividades Necessárias para a Migração](#2-atividades-necessárias-para-a-migração)
+3. [Ferramentas Utilizadas](#3-ferramentas-utilizadas)
+4. [Diagrama da Infraestrutura na AWS](#4-diagrama-da-infraestrutura-na-aws)
+5. [Garantia dos Requisitos de Segurança](#5-garantia-dos-requisitos-de-segurança)
+6. [Processo de Backup](#6-processo-de-backup)
+7. [Custo da Infraestrutura na AWS (AWS Calculator)](#7-custo-da-infraestrutura-na-aws-aws-calculator)
 8. [Conclusão](#conclusão)
 
 ---
@@ -170,47 +170,64 @@ Para assegurar a integridade dos dados e facilitar a recuperação em caso de fa
 
 ## 7. Custo da Infraestrutura na AWS (AWS Calculator)
 
-A estimativa de custos, baseada em simulações e informações atuais da AWS é a seguinte:
+A estimativa de custos, baseada em simulações e informações atuais da AWS, é a seguinte:
 
-### Etapa 1 – Lift-and-Shift
+### Etapa 1: Estimativa da Migração
 
-| Recurso                          | Especificação                                  | Custo Mensal Estimado (USD) |
-| --------------------------------- | ---------------------------------------------- | --------------------------- |
-| **EC2 Frontend**                  | t4g.small (2 vCPUs, 2 GiB)                    | ~$9.27                      |
-| **EC2 Backend**                   | t4g.medium (2 vCPUs, 4 GiB)                   | ~$17.00                     |
-| **RDS MySQL**                     | db.t4g.xlarge (16 GiB, Single-AZ)             | ~$193.28                    |
-| **AWS Database Migration Service**| t3.medium, 500 GB (Single-AZ)                 | ~$111.88                    |
-| **VPN Site-to-Site**              | 1 Conexão VPN                                 | ~$2.40                      |
-| **S3 - Backup Prévio**            | 500 GB, Standard-IA                           | ~$11.25                     |
-| **S3 - Armazenamento de Arquivos Estáticos** | 100 GB, Standard                         | ~$2.84                      |
-| **Route 53**                      | 2 Zonas Hospedadas, 1 Domínio                 | ~$2.00                      |
-| **CloudFront**                    | 100 GB de saída, 30 GB de origem              | ~$14.75                     |
-| **Elastic Load Balancer**         | 1 Application Load Balancer                   | ~$22.27                     |
-| **VPC (Redes)**                   | 1 Gateway NAT, 1 IP público                   | ~$38.75                     |
-| **WAF (Web Application Firewall)**| Proteção da Web                               | ~$50.00                     |
+| **Serviço** | **Custo** |
+| --- | --- |
+| AWS MGN (2 servidores) | 4,03 USD |
+| AWS EC2 – Front-End | 1,00 USD |
+| AWS EC2 – Backend | 2,00 USD |
+| EBS Temporário (10gb) | 0,16 USD |
+| Migração AWS DMS (1 instância) | 3,58 USD |
+| Armazenamento EBS Migração (500gb) | 3,84 USD |
+| VPN Site-to-site | 4,80 USD |
+| **TOTAL DO INVESTIMENTO** | **19,41 USD** |
 
-### Etapa 2 – Modernização com Kubernetes
+### Etapa 1: Estimativa da Aplicação
 
-| Recurso                              | Especificação                                 | Custo Mensal Estimado (USD) |
-| ---------------------------------- | --------------------------------------------- | --------------------------- |
-| **Amazon RDS for MySQL**           | Banco de dados, Armazenamento 500GB, Instância db.t4g.xlarge, Multi-AZ, SSD gp3 | 391,63 USD                  |
-| **Amazon EKS**                     | 1 cluster, 1 nó híbrido                      | 73,00 USD                   |
-| **Amazon EC2**                     | Instância t4g.medium, 2 instâncias, 20GB EBS  | 34,01 USD                   |
-| **Amazon ElastiCache**             | Tipo cache.t4g.medium, Redis, 1 nó           | 32,12 USD                   |
-| **Amazon Virtual Private Cloud**   | 1 gateway NAT, 1 IP público, 1TB de tráfego de entrada | 38,75 USD                   |
-| **Elastic Load Balancing**         | 1 Application Load Balancer                  | 22,27 USD                   |
-| **Amazon CloudFront**              | 100GB de dados de saída, 30GB de origem       | 14,75 USD                   |
-| **Amazon Route 53**                | 2 zonas hospedadas, 1 domínio                | 2,00 USD                    |
-| **AWS Backup**                     | Backup de 20GB, retenção de 25 dias          | 3,55 USD                    |
-| **AWS CloudTrail**                 | 1 trilha de gerenciamento, 1 milhão de eventos | 1,00 USD                    |
-| **Amazon CloudWatch**              | 5GB de logs consumidos, 5GB de dados analisados | 12,87 USD                   |
-| **Amazon GuardDuty**               | 2000 eventos do AWS CloudTrail, 5GB de logs de fluxo da VPC | 17,16 USD                   |
-| **AWS Web Application Firewall (WAF)** | 2 listas ACL, 5 regras por ACL               | 50,00 USD                   |
-| **Total Aproximado**               | —                                            | **~681,11 USD/mês**         |
+| **Serviço** | **Custo Mensal** |
+| --- | --- |
+| Amazon EC2 Back-end | 17,00 USD |
+| Amazon EC2 Front-end | 9,27 USD |
+| Amazon RDS for MySQL | 193,28 USD |
+| Amazon Route 53 | 2,00 USD |
+| Amazon CloudFront | 14,75 USD |
+| Elastic Load Balancing | 22,27 USD |
+| Amazon S3 | 2,84 USD |
+| Amazon VPC | 38,75 USD |
+| Amazon WAF | 50,00 USD |
+| **TOTAL DO INVESTIMENTO** | **350,16 USD** |
 
+- A estimativa detalhada de custos pode ser acessada em: [***Calculadora da AWS***](https://calculator.aws/#/estimate?id=0786a40d993e37ea58b547117bec863b67724677).
 
+---
 
-Os valores apresentados podem variar conforme o uso real e eventuais ajustes nas configurações; a simulação foi realizada utilizando o AWS Calculator, considerando um cenário de produção com 1 ano de reserva para instâncias críticas.
+### Etapa 2: Estimativa dos Custos da Aplicação Moderna
+
+| **Serviços** | **Custo Mensal** |
+| --- | --- |
+| Amazon RDS for MySQL | 391,63 USD |
+| Amazon EKS | 73,00 US |
+| Amazon EC2 | 34,01 USD |
+| Amazon ElastiCache | 32,12 USD |
+| Amazon VPC | 38,75 USD |
+| Elastic Load Balancing | 22,27 USD |
+| Amazon CloudFront | 14,75 USD |
+| Amazon Route 53 | 2,00 USD |
+| AWS Backup | 3,55 USD |
+| AWS WAF | 50,00 USD |
+| AWS CloudTrail | 1,00 USD |
+| AWS CloudWatch | 12,87 USD |
+| Amazon GuardDuty | 17,16 USD |
+| **TOTAL DO INVESTIMENTO** | **693,12 USD** |
+
+**Considerações Importantes:**
+
+- Os custos foram estimados com base no plano On-Demand de 1 ano.
+- Ambientes de produção serão hospedados na região US East (N. Virginia) (us-east-1).
+- A estimativa detalhada de custos pode ser acessada em: [***Calculadora da AWS***](https://calculator.aws/#/estimate?id=c5cd66187cae57181e1a2637d0d0d508ae41fafd).
 
 ---
 
